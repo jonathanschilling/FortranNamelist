@@ -29,9 +29,9 @@ public class FortranNamelist {
     /**
      * Define parser for group {@code groupName} from the namelist given as text in {@code namelist}
      * according to the Object definition given as {@code parseInto}.  
-     * @param namelist String containing the namelist
-     * @param groupName group name of the group to be parsed into the object {@code parseInto}
-     * @param parseInto Object definition for parsing target. Use annotation {@code namelist_variable(name="lstell_sym")}
+     * @param _namelist String containing the namelist
+     * @param _groupName group name of the group to be parsed into the object {@code parseInto}
+     * @param _parseInto Object definition for parsing target. Use annotation {@code namelist_variable(name="lstell_sym")}
      *                  to specify which variables to parse. {@code name} is optional (default=take variable name as identifier
      *                  in namelist) and can be used to map from Fortran names (e.g. lstell_sym) to your own defitions (e.g. stellaratorSymmetric).
      */

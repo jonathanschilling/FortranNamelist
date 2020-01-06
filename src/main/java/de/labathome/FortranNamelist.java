@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Class to parse Fortran namelists into Java classes.
  * This uses the information given in the class definition to constrain the parser.
- * @author Jonathan Schilling (jonathan.schilling@ipp.mpg.de)
+ * @author Jonathan Schilling (jonathan.schilling@mail.de)
  * @version 0.9 2018-07-25 intial implementation
  * @version 1.0 2018-09-11 1d and 2d arrays with fancy specifiers
  */
@@ -22,9 +22,9 @@ public class FortranNamelist {
     private Object parseInto;
 
     /**
-     * set to true to be spamed with lots of debug output
+     * set to true to be enable verbal diarrhea with lots of debug output
      */
-    public boolean debugNamelistReader = false;
+    public boolean _debug = false;
 
     /**
      * Define parser for group {@code groupName} from the namelist given as text in {@code namelist}
@@ -134,7 +134,7 @@ public class FortranNamelist {
             }
         }
 
-        if (debugNamelistReader) {
+        if (_debug) {
             System.out.println("Variable names to look for:");
             System.out.println(names.keySet());
 
@@ -148,7 +148,7 @@ public class FortranNamelist {
             int commentStart = namelist.indexOf("!");
             int lineEnd = namelist.indexOf("\n", commentStart);
 
-            if (debugNamelistReader) {
+            if (_debug) {
                 System.out.println("INFO: found !-comment from " + commentStart + " to " + lineEnd+":");
                 System.out.println(namelist.substring(commentStart, lineEnd+1));
             }
@@ -173,7 +173,7 @@ public class FortranNamelist {
             }
 
 
-            if (debugNamelistReader) {
+            if (_debug) {
                 System.out.println("INFO: found c-comment from " + commentStart + " to " + lineEnd+":");
                 System.out.println(namelist.substring(commentStart, lineEnd+1));
             }
@@ -186,26 +186,35 @@ public class FortranNamelist {
         // replace " by ' for unified parsing
         namelist = namelist.replace("\"", "'");
 
-        // Currently, this only checks wether the first group is named groupName.
-        // Since more than one namelist can be in a namelist file,
-        // it would be wise to loop over all namelists in the file and interpret only the groupName one.
-        int namelistStart = namelist.indexOf("&")+1;
-        int nameEnd = namelist.indexOf("\n", namelistStart);
-        // check wether accidentially a variable name was included (variables may be already defined in the first line,
-        // right after the namelist starting tag
-        if (namelist.substring(namelistStart, nameEnd).contains(" ")) {
-            nameEnd = namelist.indexOf(" ", namelistStart);
+        int namelistStart = 0, nameEnd = -1;
+        boolean foundNamelist = false;
+        // loop over all namelists in the file and interpret only the groupName one
+        while (!foundNamelist && namelistStart < namelist.length()) {
+	        // look for starting tags of namelists like "&input \n"
+	        namelistStart = namelist.indexOf("&", namelistStart)+1;
+	        nameEnd = namelist.indexOf("\n", namelistStart);
+	        // check wether accidentially a variable name was included (variables may be already defined in the first line,
+	        // right after the namelist starting tag
+	        if (namelist.substring(namelistStart, nameEnd).contains(" ")) {
+	            nameEnd = namelist.indexOf(" ", namelistStart);
+	        }
+	
+	        // get group name
+	        String namelistName = namelist.substring(namelistStart, nameEnd).trim().toLowerCase();
+	
+	        if (_debug) {
+	        	System.out.println("found namelist: " + namelistName);
+	        }
+	
+	        if (namelistName.equals(groupName)) {
+	        	foundNamelist = true;
+	        } else {
+	        	// skip the start of the current namelist to start searching for the next namelist in the input
+	        	namelistStart++;
+	        }
         }
-
-        // get group name
-        String namelistName = namelist.substring(namelistStart, nameEnd).trim().toLowerCase();
-
-        if (debugNamelistReader) {
-        	System.out.println("group name: " + namelistName);
-        }
-
-        if (namelistName.equals(groupName)) {
-
+        
+        if (foundNamelist) {
             // find end of namelist: "/"
             int namelistEnd = nameEnd;
             boolean insideString = false;
@@ -221,11 +230,10 @@ public class FortranNamelist {
                 }
             }
 
-            //            int namelistEnd = namelist.indexOf("/", nameEnd);
-
             String contents = namelist.substring(nameEnd, namelistEnd);
-            // System.out.println("contents: " + contents);
 
+            // God praise https://regex101.com/ !
+            
             // look for a floating point number with exponential, p.ex. -1.2e-3 or 123.45E8 1.d-10
             Pattern floatingPointNumberPattern = Pattern.compile("^[-+]?[0-9]*(\\.)?[0-9]+([dDeE][-+]?[0-9]+)?");
 
@@ -251,8 +259,6 @@ public class FortranNamelist {
                 // at the beginning, look at the name of the first variable
                 if (var_counter==0) {
                     name=contents.substring(last_i, i).trim().toLowerCase();
-                    // System.out.println("name: " + name);
-
                 } else {
                     // next part to split into some variable content (belonging to the variable identified by the current value of "name")
                     // and the next variable name
@@ -260,13 +266,10 @@ public class FortranNamelist {
 
                     // look for String definition like 'a String'
                     if (part.contains("'")) {
-                        int begin = part.indexOf("'"),
-                            end = part.indexOf("'", begin+1);
+                        int begin = part.indexOf("'");
+                        int end   = part.indexOf("'", begin+1);
 
                         String stringPart = part.substring(begin+1, end);
-                        //                          System.out.println("found a string " + stringPart);
-
-
 
                         // now check wether there was something between the string start and the = sign
                         if (part.substring(0, begin).trim().length() > 0) {
@@ -274,13 +277,13 @@ public class FortranNamelist {
                         } else {
                             val = stringPart.trim();
 
-                            if (debugNamelistReader) System.out.println(name + " => \"" + val + "\"");
+                            if (_debug) System.out.println(name + " => \"" + val + "\"");
 
                             // only try to interpret variables that are in the parseInto class
                             if (names.containsKey(name)) {
                                 String fieldName = names.get(name);
                                 String type = types.get(name);
-                                if (debugNamelistReader) System.out.println("interpret " + name + " as " + type);
+                                if (_debug) System.out.println("interpret " + name + " as " + type);
 
                                 // check for correct type (so whether we are actually looking for a string)
                                 if (type.equals("0d:String")) {
@@ -304,7 +307,7 @@ public class FortranNamelist {
                                 if (name.startsWith(",")) {
                                     name = name.substring(1).trim();
                                 }
-                                if (debugNamelistReader) System.out.println("next name: " + name);
+                                if (_debug) System.out.println("next name: " + name);
                             }
                         }
                     }
@@ -314,17 +317,16 @@ public class FortranNamelist {
                         int end = part.indexOf(".", 1);
 
                         String logicalPart = part.substring(0, end+1);
-                        //                          System.out.println("found a string " + logicalPart);
 
                         val = logicalPart;
 
-                        if (debugNamelistReader) System.out.println(name + " => \"" + val + "\"");
+                        if (_debug) System.out.println(name + " => \"" + val + "\"");
 
                         // only try to interpret variables that are in the parseInto class
                         if (names.containsKey(name)) {
                             String fieldName = names.get(name);
                             String type = types.get(name);
-                            if (debugNamelistReader) System.out.println("interpret " + name + " as " + type);
+                            if (_debug) System.out.println("interpret " + name + " as " + type);
 
                             // check for correct type (so whether we are actually looking for a string)
                             if (type.equals("0d:boolean")) {
@@ -350,7 +352,7 @@ public class FortranNamelist {
                             if (name.startsWith(",")) {
                                 name = name.substring(1).trim();
                             }
-                            if (debugNamelistReader) System.out.println("next name: " + name);
+                            if (_debug) System.out.println("next name: " + name);
                         }
                     }
 
@@ -358,13 +360,13 @@ public class FortranNamelist {
                     else if (part.toLowerCase().startsWith("t") || part.toLowerCase().startsWith("f")) {
                         val = part.toLowerCase().substring(0, 1);
 
-                        if (debugNamelistReader) System.out.println(name + " => \"" + val + "\"");
+                        if (_debug) System.out.println(name + " => \"" + val + "\"");
 
                         // only try to interpret variables that are in the parseInto class
                         if (names.containsKey(name)) {
                             String fieldName = names.get(name);
                             String type = types.get(name);
-                            if (debugNamelistReader) System.out.println("interpret " + name + " as " + type);
+                            if (_debug) System.out.println("interpret " + name + " as " + type);
 
                             // check for correct type (so whether we are actually looking for a string)
                             if (type.equals("0d:boolean")) {
@@ -388,7 +390,7 @@ public class FortranNamelist {
                         if (name.startsWith(",")) {
                             name = name.substring(1).trim();
                         }
-                        if (debugNamelistReader) System.out.println("next name: " + name);
+                        if (_debug) System.out.println("next name: " + name);
 
                     }
 
@@ -398,24 +400,18 @@ public class FortranNamelist {
                         part=part.replace("\n", " ");
                         part=part.replace("\r", " ");
                         
-                        
+                        if (_debug) System.out.println("found number(s) as value: " + part.toLowerCase());
 
-                        if (debugNamelistReader) System.out.println("found number(s) as value: " + part.toLowerCase());
-
-                        // maybe better to look for first non-number character (arrays...)
+                        // it may be better to look for non-number character (arrays...) first...
 
                         int end=part.length();
-                        //                          int end = part.indexOf(" ");
-                        //                          if (end<=0) {
-                        //                              end = part.indexOf("\n");
-                        //                          }
 
                         // look using regex for next var name
                         Matcher m = nextVarNamePattern.matcher(part.toLowerCase());
 
                         if (m.find()) {
                             end = m.start()-1;
-                            if (debugNamelistReader) System.out.println("found next var name: " + part.substring(end));
+                            if (_debug) System.out.println("found next var name: " + part.substring(end));
                         }
 
                         if (end<0) {
@@ -437,9 +433,7 @@ public class FortranNamelist {
                             val = val.substring(0, val.length()-1).trim();
                         }
 
-
-                        if (debugNamelistReader) System.out.println(name + " => \"" + val + "\"");
-
+                        if (_debug) System.out.println(name + " => \"" + val + "\"");
 
                         // look for multi-index notation like 1.0 1.5 2*2.0 1.0 for later expansion 
                         //                                            ^^^^^
@@ -453,18 +447,17 @@ public class FortranNamelist {
                         if (arrayIndexSpecifierFound) {
                             indexString = name.substring(name.indexOf("(")+1, name.indexOf(")"));
                             name = name.substring(0, name.indexOf("(")).trim();
-                            //if (debugNamelistReader) System.out.println(" ==> index in array \""+indexString+"\"");
+                            if (_debug) System.out.println(" ==> index in array \""+indexString+"\"");
                         }
-
 
                         // only try to interpret variables that are in the parseInto class
                         if (names.containsKey(name)) {
                             String fieldName = names.get(name);
                             String type = types.get(name);
-                            if (debugNamelistReader) System.out.println("interpret " + name + " as " + type);
+                            if (_debug) System.out.println("interpret " + name + " as " + type);
 
                             try {
-                                // check for correct type (so whether we are actually looking for a string)
+                                // check for correct type and parse the value(s) accordingly
                                 if (type.equals("0d:int")) {
                                     int value = Integer.valueOf(val);
 
@@ -489,14 +482,12 @@ public class FortranNamelist {
                                     field.setAccessible(true);
                                     int[] value = (int[])field.get(parseInto);
 
-                                    //if (debugNamelistReader) System.out.println(" parse into 2d int array of size (" + value.length + "x" + value[0].length + ")");
-
                                     // two possibilities:
                                     if (arrayIndexSpecifierFound) {
                                         // a1) indexed value: myarr(  3) = 5.64e4  => insert at given position
                                         // a2)   range index: myarr(3:5) = 0.0     => insert into all given positions
                                         if (indexString.contains(",")) {
-                                            if (debugNamelistReader) System.out.println("error: try to put value into 1d "+name+" at location indicated by more than one index: " + indexString);
+                                            if (_debug) System.out.println("error: try to put value into 1d "+name+" at location indicated by more than one index: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
                                             if (indexString.contains(":")) {
@@ -536,7 +527,6 @@ public class FortranNamelist {
 
                                             for (int idx=0; idx<numValues; ++idx) {
                                                 if (inValues[idx].contains("*")) {
-                                                    //if (debugNamelistReader) System.out.println("INFO: found multi-index value: " + inValues[idx]);
                                                     int mi=Integer.valueOf(inValues[idx].split("\\*")[0]);
                                                     int repeatedValue = Integer.valueOf(inValues[idx].split("\\*")[1]);
                                                     for (int cnt=0; cnt<mi; ++cnt) {
@@ -582,14 +572,12 @@ public class FortranNamelist {
                                     field.setAccessible(true);
                                     double[] value = (double[])field.get(parseInto);
 
-                                    //if (debugNamelistReader) System.out.println(" parse into 2d int array of size (" + value.length + "x" + value[0].length + ")");
-
                                     // two possibilities:
                                     if (arrayIndexSpecifierFound) {
                                         // a1) indexed value: myarr(  3) = 5.64e4  => insert at given position
                                         // a2)   range index: myarr(3:5) = 0.0     => insert into all given positions
                                         if (indexString.contains(",")) {
-                                            if (debugNamelistReader) System.out.println("error: try to put value into 1d "+name+" at location indicated by more than one index: " + indexString);
+                                            if (_debug) System.out.println("error: try to put value into 1d "+name+" at location indicated by more than one index: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
                                             if (indexString.contains(":")) {
@@ -629,7 +617,7 @@ public class FortranNamelist {
 
                                             for (int idx=0; idx<numValues; ++idx) {
                                                 if (inValues[idx].contains("*")) {
-                                                    if (debugNamelistReader) System.out.println("INFO: found multi-index value: " + inValues[idx]);
+                                                    if (_debug) System.out.println("INFO: found multi-index value: " + inValues[idx]);
                                                     int mi=Integer.valueOf(inValues[idx].split("\\*")[0]);
                                                     double repeatedValue = Double.valueOf(inValues[idx].split("\\*")[1]);
                                                     for (int cnt=0; cnt<mi; ++cnt) {
@@ -677,15 +665,13 @@ public class FortranNamelist {
                                     field.setAccessible(true);
                                     int[][] value = (int[][])field.get(parseInto);
 
-                                    //if (debugNamelistReader) System.out.println(" parse into 2d int array of size (" + value.length + "x" + value[0].length + ")");
-
                                     // two possibilities:
                                     if (arrayIndexSpecifierFound) {
                                         // a1) indexed value: myarr(  3, 4) = 5.64e4  => insert at given position
                                         // a2)   range index: myarr(3:5, 1) = 0.0     => insert into all given positions
                                         String[] strIndices = indexString.split("[\\s]*,");
                                         if (strIndices.length != 2) {
-                                            if (debugNamelistReader) System.out.println("error: try to put value into 2d "+name+" at location indicated by more than two indices: " + indexString);
+                                            if (_debug) System.out.println("error: try to put value into 2d "+name+" at location indicated by more than two indices: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
                                             if (strIndices[0].contains(":") ||strIndices[1].contains(":")) {
@@ -746,7 +732,7 @@ public class FortranNamelist {
 
                                             for (int idx=0; idx<numValues; ++idx) {
                                                 if (inValues[idx].contains("*")) {
-                                                    if (debugNamelistReader) System.out.println("INFO: found multi-index value: " + inValues[idx]);
+                                                    if (_debug) System.out.println("INFO: found multi-index value: " + inValues[idx]);
                                                     int mi=Integer.valueOf(inValues[idx].split("\\*")[0]);
                                                     int repeatedValue = Integer.valueOf(inValues[idx].split("\\*")[1]);
                                                     for (int cnt=0; cnt<mi; ++cnt) {
@@ -796,15 +782,13 @@ public class FortranNamelist {
                                     field.setAccessible(true);
                                     double[][] value = (double[][])field.get(parseInto);
 
-                                    //if (debugNamelistReader) System.out.println(" parse into 2d dbl array of size (" + value.length + "x" + value[0].length + ")");
-
                                     // two possibilities:
                                     if (arrayIndexSpecifierFound) {
                                         // a1) indexed value: myarr(  3, 4) = 5.64e4  => insert at given position
                                         // a2)   range index: myarr(3:5, 1) = 0.0     => insert into all given positions
                                         String[] strIndices = indexString.split("[\\s]*,");
                                         if (strIndices.length != 2) {
-                                            if (debugNamelistReader) System.out.println("error: try to put value into 2d "+name+" at location indicated by more than two indices: " + indexString);
+                                            if (_debug) System.out.println("error: try to put value into 2d "+name+" at location indicated by more than two indices: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
                                             if (strIndices[0].contains(":") ||strIndices[1].contains(":")) {
@@ -865,7 +849,7 @@ public class FortranNamelist {
 
                                             for (int idx=0; idx<numValues; ++idx) {
                                                 if (inValues[idx].contains("*")) {
-                                                    if (debugNamelistReader) System.out.println("INFO: found multi-index value: " + inValues[idx]);
+                                                    if (_debug) System.out.println("INFO: found multi-index value: " + inValues[idx]);
                                                     int mi=Integer.valueOf(inValues[idx].split("\\*")[0]);
                                                     double repeatedValue = Double.valueOf(inValues[idx].split("\\*")[1]);
                                                     for (int cnt=0; cnt<mi; ++cnt) {
@@ -921,7 +905,7 @@ public class FortranNamelist {
                             if (name.startsWith(",")) {
                                 name = name.substring(1).trim();
                             }
-                            if (debugNamelistReader) System.out.println("next name: " + name);
+                            if (_debug) System.out.println("next name: " + name);
                         }
                     }
 
@@ -941,6 +925,8 @@ public class FortranNamelist {
 
                 var_counter++;
             }
+        } else {
+        	throw new RuntimeException("namelist '"+groupName+"' not found in the given input");
         }
     }
     

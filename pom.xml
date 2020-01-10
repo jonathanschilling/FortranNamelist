@@ -75,6 +75,16 @@
 	</distributionManagement>
 
 	<build>
+		<resources>
+			<resource>
+				<!-- Include the documentation as a resource: README.md -->
+				<directory>${project.basedir}</directory>
+				<includes>
+					<include>README.md</include>
+				</includes>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

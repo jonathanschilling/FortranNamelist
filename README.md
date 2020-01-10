@@ -94,9 +94,10 @@ Maven central:
 	You can also read the contents of the namelist from a text file, which might be the more usual way.
 
 	```java
+	String filename = "/home/jonathan/someNamelist.nml";
 	String inputFile = "";
 	try {
-		inputFile = new String(Files.readAllBytes(Paths.get(getClass().getResource(testVmecInput).toURI())));
+		inputFile = new String(Files.readAllBytes(Paths.get(filename)));
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -108,7 +109,11 @@ Maven central:
 	FortranNamelist parser = new FortranNamelist(namelist, "mgrid_nli", testClass);
 	testClass = (MgridParameters)parser.getParsed();
 	```
-
+	
+	Here, you need to specify the name of the namelist to parse as the second parameter to the constructor
+	of the `FortranNamelist` class.
+	The method `getParsed()` then parses the given textual namelist into the class given as third parameter to
+	the constructor and returns the instance with all specified fields filled with the values from the namelist.
 	
 
 

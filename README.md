@@ -115,7 +115,63 @@ Maven central:
 	The method `getParsed()` then parses the given textual namelist into the class given as third parameter to
 	the constructor and returns the instance with all specified fields filled with the values from the namelist.
 	
+5. If you are parsing one- or two-dimensional arrays, you might need to specify the starting indices of the arrays.
+	In Fortran, array indices usually start at 1 and this is assumed by default in the `FortranNamelist` parser as well.
+	However, you can also have array indices starting at 0 or even a negative number.
+	
+	Here is an example:
+	
+	```java
+	class VmecInputNamelist {
+		/** maximum number of poloidal harmonics (in r,z,lam fourier series) */
+		final public static int mpold = 101;
+			
+		/** maximum number of toroidal harmonics */
+		final public static int ntord = 101;
 
+		@namelist_variable
+		String mgrid_file;
 
+		@namelist_variable(dim0min=0)
+		double[] ac;                  
 
+		@namelist_variable(dim0min=-ntord, dim1min=0)
+		double[][] rbc;
+
+		// Init variables (especially arrays!) to default values/sizes in the constructor.
+		public VmecInputNamelist() {
+			mgrid_file = "NONE";
+			ac = new double[21];
+			rbc = new double[2*ntord+1][mpold+1]; // actual indices are in [-ntord:ntord][0:mpold]
+		}
+	}
+	```
+	
+	The `indata` namelist contains a `String`, a one-dimensional array `ac` and a two-dimensional array `rbc`.
+	You already learned above how getting the String value into the parsed class, so let's concentrate on the arrays here.
+	
+	You can think of the parsing process in Fortran like the following.
+	Target arrays for namelists to read by Fortran have to be already initialized at the time of parsing.
+	Usually, people initialize them to some default size that is large enough to accomodate any forseeable user input.
+	In the given example, the default (and therefore maximum) size of the `ac` array is 21.
+	The default size of the `rbc` array is 203x102.
+	When using the `FortranNamelist`parser, this behaviour is mimiced by initializing the dynamically-allocated
+	members in the constructor to the *same sizes* as they would be initialized in the Fortran equivalent.
+	
+	It is valid input to the Fortran parser to specify the array contents in either of the following ways:
+	1. with explicit indices or index ranges, e.g. `rbc(0,0) = 1.0` or `rbc(0,1:4) = 1.0, 2.0, 3.0, 4.0`
+	2. column-wise in a flattened format, e.g. `rbc = 1280*0.0, 1.0, 2.0, ... 475*0.0 ...`
+	
+	Especially the latter way of specifying the array contents from the top left corner to the bottom right corner
+	one value after another creates ambigiuities when parsing the array without knowledge about the intended
+	array dimensions. The `FortranNamelist` parser was implemented to specifically address this issue.
+	
+	Another issue (which is easier to account for) is that starting indices can be any integer.
+	The `ac` array starts at an index of 0 and this is told to the parser
+	by specifying `dim0min=0` in the `namelist_variable` 	annotation.
+	The `rbc` array has starting indices `dim0min = -ntord` and `dim1min = 0`.
+	
+	During parsing, the indices are simply shifted into valid index ranges of Java.
+	Therefore, you can think of then `dimXmin` parameters as an index offset that is subtracted
+	from the Fortran indices	during parsing.
 

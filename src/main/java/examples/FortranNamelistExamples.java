@@ -1,7 +1,5 @@
 package examples;
 
-import java.util.Arrays;
-
 import de.labathome.FortranNamelist;
 import de.labathome.namelist_variable;
 

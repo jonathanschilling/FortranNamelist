@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  * Class to parse Fortran namelists into Java classes.
  * This uses the information given in the class definition to constrain the parser.
  * @author Jonathan Schilling (jonathan.schilling@mail.de)
- * @version 0.9 2018-07-25 intial implementation
- * @version 1.0 2018-09-11 1d and 2d arrays with fancy specifiers
+ * @version 0.9.0 2018-07-25 intial implementation
+ * @version 1.0.1 2018-09-11 1d and 2d arrays with fancy specifiers
  */
 public class FortranNamelist {
 

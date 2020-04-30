@@ -11,8 +11,8 @@ import java.lang.annotation.ElementType;
  * The starting indices can be marked by the dim0min(for 1d and 2d arrays) and dim1min (for 2d arrays).
  * These should also be used if an array is indexed beginning with 0.
  * @author Jonathan Schilling (jonathan.schilling@mail.de)
- * @version 0.9 2018-07-25 intial implementation
- * @version 1.0 2018-09-11 1d and 2d arrays with fancy specifiers
+ * @version 0.9.0 2018-07-25 intial implementation
+ * @version 1.0.1 2018-09-11 1d and 2d arrays with fancy specifiers
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

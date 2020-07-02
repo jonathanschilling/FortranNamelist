@@ -437,6 +437,7 @@ public class FortranNamelistTest {
             , "/exampleVmecInput/input.ffhr_d1_nflux_v1.1"
             , "/exampleVmecInput/input.ITER_nflux_verification_0001.0001"
             , "/exampleVmecInput/input.dboe_id_1000_1000_1000_1000_+0000_+0000_v_00_pres_00_it_6" // => forgot value of am
+            , "/exampleVmecInput/input.BETA_5_ICUR_5K" // EXTCUR has spaces in indices
         };
 
         for (String testVmecInput: testInputs) {

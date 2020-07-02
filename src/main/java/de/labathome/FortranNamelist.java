@@ -506,7 +506,7 @@ public class FortranNamelist {
                                                 }
                                             } else {
                                                 // single entry specified
-                                                int idx = Integer.valueOf(indexString);
+                                                int idx = Integer.valueOf(indexString.trim());
 
                                                 if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idx, name)) {
                                                     // take potentially negative minimum indices into account...
@@ -596,7 +596,7 @@ public class FortranNamelist {
                                                 }
                                             } else {
                                                 // single entry specified
-                                                int idx = Integer.valueOf(indexString);
+                                                int idx = Integer.valueOf(indexString.trim());
                                                 
                                                 if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idx, name)) {
                                                     // take potentially negative minimum indices into account...

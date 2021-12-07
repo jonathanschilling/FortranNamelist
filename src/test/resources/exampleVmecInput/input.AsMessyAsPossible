@@ -179,6 +179,10 @@
  LFULL3D1OUT     = T,
  MAX_MAIN_ITERATIONS     =           1,
  LGIVEUP = F,
+ vac_1_2 = 2
+ 
  FGIVEUP =   30.0000000000000     ,
  LBSUBS  = F
+ 
+ 
  /

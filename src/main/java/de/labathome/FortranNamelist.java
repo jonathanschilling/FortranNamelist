@@ -28,7 +28,7 @@ public class FortranNamelist {
 
     /**
      * Define parser for group {@code groupName} from the namelist given as text in {@code namelist}
-     * according to the Object definition given as {@code parseInto}.  
+     * according to the Object definition given as {@code parseInto}.
      * @param _namelist String containing the namelist
      * @param _groupName group name of the group to be parsed into the object {@code parseInto}
      * @param _parseInto Object definition for parsing target. Use annotation {@code namelist_variable(name="lstell_sym")}
@@ -51,7 +51,7 @@ public class FortranNamelist {
     }
 
     /**
-     * Actually parse the group {@code groupName} from the namelist given in {@code namelist} into an Object of type {@code parseInto}. 
+     * Actually parse the group {@code groupName} from the namelist given in {@code namelist} into an Object of type {@code parseInto}.
      */
     private void parseIt() {
         // only work if all input is given
@@ -87,7 +87,7 @@ public class FortranNamelist {
                         String defaultName = (String) namelist_variable.class.getDeclaredMethod("name").getDefaultValue();
                         if (name.equals(defaultName.toLowerCase())) {
                             // System.out.println("Field "+field.getName()+" is called \"" + field.getName().toLowerCase() + "\" in namelist.");
-                            name=field.getName().toLowerCase();   
+                            name=field.getName().toLowerCase();
                         }
                         //System.out.print(name + " => " + field.getName()+" is ");
                         names.put(name, field.getName());
@@ -157,7 +157,7 @@ public class FortranNamelist {
             String commentRemoved = namelist.substring(0, commentStart) + namelist.substring(lineEnd+1);
             namelist = commentRemoved;
         }
-        
+
         // remove single-line comments like
         // c this is a comment without stuff in front of it
         while (namelist.indexOf("\nc ") > -1 || namelist.indexOf("\nc\r\n") > -1 || namelist.indexOf("\nc\n") > -1) {
@@ -198,14 +198,14 @@ public class FortranNamelist {
 	        if (namelist.substring(namelistStart, nameEnd).contains(" ")) {
 	            nameEnd = namelist.indexOf(" ", namelistStart);
 	        }
-	
+
 	        // get group name
 	        String namelistName = namelist.substring(namelistStart, nameEnd).trim().toLowerCase();
-	
+
 	        if (_debug) {
 	        	System.out.println("found namelist: " + namelistName);
 	        }
-	
+
 	        if (namelistName.equals(groupName)) {
 	        	foundNamelist = true;
 	        } else {
@@ -213,7 +213,7 @@ public class FortranNamelist {
 	        	namelistStart++;
 	        }
         }
-        
+
         if (foundNamelist) {
             // find end of namelist: "/"
             int namelistEnd = nameEnd;
@@ -233,14 +233,14 @@ public class FortranNamelist {
             String contents = namelist.substring(nameEnd, namelistEnd);
 
             // God praise https://regex101.com/ !
-            
+
             // look for a floating point number with exponential, p.ex. -1.2e-3 or 123.45E8 1.d-10
             Pattern floatingPointNumberPattern = Pattern.compile("^[-+]?[0-9]*(\\.)?[0-9]+([dDeE][-+]?[0-9]+)?");
 
             // in a String "1234.234 myvar", look for the varname "myvar"
             // and also array index varnames, p.ex. "myarr(-2, 4:6)"
-            Pattern nextVarNamePattern = Pattern.compile("([a-z]+[0-9]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
-            
+            Pattern nextVarNamePattern = Pattern.compile("([a-z]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
+
             int i=0, last_i=0;
             int var_counter=0;
             String name="", val="";
@@ -399,7 +399,7 @@ public class FortranNamelist {
 
                         part=part.replace("\n", " ");
                         part=part.replace("\r", " ");
-                        
+
                         if (_debug) System.out.println("found number(s) as value: " + part.toLowerCase());
 
                         // it may be better to look for non-number character (arrays...) first...
@@ -418,16 +418,16 @@ public class FortranNamelist {
                             end = part.length();
                         }
                         val = part.toLowerCase().substring(0, end).trim();
-                        
+
                         // 1.d-10 --> 1.e-10
                         val = val.replace("d", "e");
                         val = val.replace("D", "e");
-                        
+
                         // remove possible "," at end of strings, if someone might have felt a subtle need for separators
                         if (val.endsWith(",")) {
                             val = val.substring(0, val.length()-1).trim();
                         }
-                        
+
                         // remove possible ";" at end of strings, if someone might have felt a subtle need for separators
                         if (val.endsWith(";")) {
                             val = val.substring(0, val.length()-1).trim();
@@ -435,7 +435,7 @@ public class FortranNamelist {
 
                         if (_debug) System.out.println(name + " => \"" + val + "\"");
 
-                        // look for multi-index notation like 1.0 1.5 2*2.0 1.0 for later expansion 
+                        // look for multi-index notation like 1.0 1.5 2*2.0 1.0 for later expansion
                         //                                            ^^^^^
                         // into normal array format 1.0 1.5 2.0 2.0 1.0
                         //                                  ^^^^^^^
@@ -465,7 +465,7 @@ public class FortranNamelist {
                                     Field field = parseInto.getClass().getDeclaredField(fieldName);
                                     field.setAccessible(true);
                                     field.set(parseInto, value);
-                                    
+
                                 } else if (type.equals("0d:double")) {
                                     double value = Double.valueOf(val);
 
@@ -473,7 +473,7 @@ public class FortranNamelist {
                                     Field field = parseInto.getClass().getDeclaredField(fieldName);
                                     field.setAccessible(true);
                                     field.set(parseInto, value);
-                                    
+
                                 } else if (type.equals("1d:int")) {
                                     int dim0min_val = dim0min.get(name);
 
@@ -516,7 +516,7 @@ public class FortranNamelist {
                                         }
                                     } else {
                                         // b) whole array: myarr = 1.0, 2.0, 3.0, .... => unflatten using default (maximum) dimensions
-                                        
+
                                         int[] flattened_value = null;
                                         if (multiIndex) {
                                             // split array values by spaces and/or commas
@@ -559,11 +559,11 @@ public class FortranNamelist {
                                         } else {
                                             System.out.println("ERROR: too many values specified for "+name+": " + flattened_value.length + " instead of " + value.length);
                                         }
-                                    } 
+                                    }
 
                                     // set field to value from namelist
                                     field.set(parseInto, value);
-                                    
+
                                 } else if (type.equals("1d:double")) {
                                     int dim0min_val = dim0min.get(name);
 
@@ -597,7 +597,7 @@ public class FortranNamelist {
                                             } else {
                                                 // single entry specified
                                                 int idx = Integer.valueOf(indexString.trim());
-                                                
+
                                                 if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idx, name)) {
                                                     // take potentially negative minimum indices into account...
                                                     value[idx-dim0min_val] = Double.valueOf(val);
@@ -606,7 +606,7 @@ public class FortranNamelist {
                                         }
                                     } else {
                                         // b) whole array: myarr = 1.0, 2.0, 3.0, .... => unflatten using default (maximum) dimensions
-                                        
+
                                         double[] flattened_value = null;
                                         if (multiIndex) {
                                             // split array values by spaces and/or commas
@@ -650,8 +650,8 @@ public class FortranNamelist {
                                         } else {
                                             System.out.println("ERROR: too many values specified for "+name+": " + flattened_value.length + " instead of " + value.length);
                                         }
-                                        
-                                    } 
+
+                                    }
 
                                     // set field to value from namelist
                                     field.set(parseInto, value);
@@ -701,7 +701,7 @@ public class FortranNamelist {
                                                     // insert into all possible positions
                                                     for (int row = row_start; row <= row_end; ++row) {
                                                         for (int col = col_start; col <= col_end; ++col) {
-    
+
                                                             // take potentially negative minimum indices into account...
                                                             value[row-dim0min_val][col-dim1min_val] = Integer.valueOf(val);
                                                         }
@@ -721,7 +721,7 @@ public class FortranNamelist {
                                         }
                                     } else {
                                         // b) whole array: myarr = 1.0, 2.0, 3.0, .... => unflatten using default (maximum) dimensions
-                                        
+
                                         int[] flattened_value = null;
                                         if (multiIndex) {
                                             // split array values by spaces and/or commas
@@ -768,11 +768,11 @@ public class FortranNamelist {
                                         } else {
                                             System.out.println("ERROR: too many values specified for "+name+": " + flattened_value.length + " instead of " + (value.length*value[0].length));
                                         }
-                                    } 
+                                    }
 
                                     // set field to value from namelist
                                     field.set(parseInto, value);
-                                    
+
                                 } else if (type.equals("2d:double")) {
                                     int dim0min_val = dim0min.get(name);
                                     int dim1min_val = dim1min.get(name);
@@ -818,7 +818,7 @@ public class FortranNamelist {
                                                     // insert into all possible positions
                                                     for (int row = row_start; row <= row_end; ++row) {
                                                         for (int col = col_start; col <= col_end; ++col) {
-    
+
                                                             // take potentially negative minimum indices into account...
                                                             value[row-dim0min_val][col-dim1min_val] = Double.valueOf(val);
                                                         }
@@ -828,7 +828,7 @@ public class FortranNamelist {
                                                 // single entry specified
                                                 int idx_row = Integer.valueOf(strIndices[0].trim());
                                                 int idx_col = Integer.valueOf(strIndices[1].trim());
-                                                
+
                                                 if (allowedArrayIndex(0, value.length-1, idx_row-dim0min_val, name)
                                                     && allowedArrayIndex(0, value[0].length-1, idx_col-dim1min_val, name)) {
                                                     // take potentially negative minimum indices into account...
@@ -838,7 +838,7 @@ public class FortranNamelist {
                                         }
                                     } else {
                                         // b) whole array: myarr = 1.0, 2.0, 3.0, .... => unflatten using default (maximum) dimensions
-                                        
+
                                         double[] flattened_value = null;
                                         if (multiIndex) {
                                             // split array values by spaces and/or commas
@@ -885,11 +885,11 @@ public class FortranNamelist {
                                         } else {
                                             System.out.println("ERROR: too many values specified for "+name+": " + flattened_value.length + " instead of " + (value.length*value[0].length));
                                         }
-                                    } 
+                                    }
 
                                     // set field to value from namelist
                                     field.set(parseInto, value);
-                                    
+
                                 } else {
                                     throw new RuntimeException("Type " + type + " is not implemented yet in FortranNamelist parser!");
                                 }
@@ -913,7 +913,7 @@ public class FortranNamelist {
                     else if (names.containsKey(part.toLowerCase())) {
                         System.out.println("INFO: probably forgot value for \"" + name + "\"? [only found next variable name \""+part.toLowerCase()+"\"] ==> will use default values");
                     }
-                    
+
                     // You should not see this, since it indicates that a certain part could not be interpreted.
                     else {
                         System.out.println("last name: " + name.toLowerCase());
@@ -929,10 +929,10 @@ public class FortranNamelist {
         	throw new RuntimeException("namelist '"+groupName+"' not found in the given input");
         }
     }
-    
+
     /**
      * Check index boundaries for inserting values into array; named version.
-     * 
+     *
      * @param minIdx     minimum allowable index, i.e. 0 for int[] a = int[10];
      * @param maxIdx     maximum allowable index, i.e. 9 for int[] a = int[10];
      * @param idxToCheck index to check, i.e. 5 or 11

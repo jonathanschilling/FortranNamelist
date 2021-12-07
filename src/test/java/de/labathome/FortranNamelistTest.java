@@ -63,24 +63,24 @@ public class FortranNamelistTest {
             }
         };
 
-        MgridParameters testClass = new MgridParameters(); 
+        MgridParameters testClass = new MgridParameters();
 
         System.out.println("before parsing:");
         dumpObject(testClass);
         System.out.println("\n\n");
 
 
-        String namelist="&MGRID_NLI\r\n" + 
-            "   MGRID_EXT = 'w7x_conf17_rev'\r\n" + 
-            "   MGRID_MODE = 'R'\r\n" + 
-            "   LSTELL_SYM = .TRUE.\r\n" + 
-            "   RMIN = 4.30\r\n" + 
-            "   RMAX = 6.30\r\n" + 
-            "   ZMIN = -1.20\r\n" + 
-            "   ZMAX = 1.20\r\n" + 
-            "   IR = 211\r\n" + 
-            "   JZ = 241\r\n" + 
-            "   KP = 36\r\n" + 
+        String namelist="&MGRID_NLI\r\n" +
+            "   MGRID_EXT = 'w7x_conf17_rev'\r\n" +
+            "   MGRID_MODE = 'R'\r\n" +
+            "   LSTELL_SYM = .TRUE.\r\n" +
+            "   RMIN = 4.30\r\n" +
+            "   RMAX = 6.30\r\n" +
+            "   ZMIN = -1.20\r\n" +
+            "   ZMAX = 1.20\r\n" +
+            "   IR = 211\r\n" +
+            "   JZ = 241\r\n" +
+            "   KP = 36\r\n" +
             "/";
 
         // parse the namelist into a Java object
@@ -200,13 +200,13 @@ public class FortranNamelistTest {
             @namelist_variable  double     pres_scale;          // factor used to scale pressure profile (default value = 1) useful so user can fix profile and change beta without having to change all AM coefficients separately
             @namelist_variable(dim0min=0)
             double[]   raxis_cc;            // stellarator-symmetric coefficients of magnetic axis position r
-            @namelist_variable(dim0min=0) 
+            @namelist_variable(dim0min=0)
             double[]   zaxis_cs;            // stellarator-symmetric coefficients of magnetic axis position z
-            @namelist_variable(dim0min=0) 
+            @namelist_variable(dim0min=0)
             double[]   raxis_cs;            // stellarator-asymmetric coefficients of magnetic axis position r
             @namelist_variable(dim0min=0)
             double[]   zaxis_cc;            // stellarator-asymmetric coefficients of magnetic axis position z
-            @namelist_variable     int     mpol;                // upper limit for poloidal mode numbers 
+            @namelist_variable     int     mpol;                // upper limit for poloidal mode numbers
             @namelist_variable     int     ntor;                // upper limit for toroidal mode number range
             @namelist_variable     int     ntheta;              // number of theta grid points (>=2*mpol+6)
             @namelist_variable     int     nzeta;               // number of zeta grid points (=1 IF ntor=0)
@@ -281,6 +281,8 @@ public class FortranNamelistTest {
             @namelist_variable boolean     lgiveup;             // inserted M.Drevlak
             @namelist_variable  double     fgiveup;             // inserted M.Drevlak, giveup-factor for ftolv
             @namelist_variable boolean     lbsubs;              // J Hanson See jxbforce coding
+
+            @namelist_variable     int     vac_1_2;             // which NESTOR version to use
 
             // Init variables (especially arrays!) to default values/sizes in the constructor.
             // Updated based on trunk/LIBSTELL/Sources/Modules/{vmec_input.f, vparams.f} and trunk/VMEC2000/Sources/Input_Output/readin.f
@@ -367,7 +369,7 @@ public class FortranNamelistTest {
                 mfilter_fbdy = -1; nfilter_fbdy = -1;
                 tcon0 = 1;
                 precon_type = "NONE"; prec2d_threshold = 1.e-30;
-                curtor = 0; 
+                curtor = 0;
                 phiedge = 1;
                 mgrid_file = "NONE";
                 lfreeb = true;
@@ -398,6 +400,8 @@ public class FortranNamelistTest {
                 bcrit = 1;
                 at[0] = 1;
 
+                vac_1_2 = 1;
+
                 //
                 // BACKWARDS COMPATIBILITY
                 //
@@ -423,7 +427,7 @@ public class FortranNamelistTest {
                 //    ELSEWHERE
                 //       zaxis_cs = zaxis_cs
                 //    ENDWHERE
-                // 
+                //
                 // ==> If something is given in raxis or zaxis, put it in the corresponding positions of raxis_cc and zaxis_cs.
             }
         }
@@ -443,7 +447,7 @@ public class FortranNamelistTest {
         for (String testVmecInput: testInputs) {
 
             System.out.println("testing \"" + testVmecInput + "\"");
-            
+
             String inputFile = "";
             try {
                 inputFile = new String(Files.readAllBytes(Paths.get(getClass().getResource(testVmecInput).toURI())));
@@ -454,7 +458,7 @@ public class FortranNamelistTest {
             //System.out.println("read input file:");
             //System.out.println(inputFile);
 
-             
+
 
             //        System.out.println("before parsing:");
             //        dumpObject(vmecInput);
@@ -478,19 +482,19 @@ public class FortranNamelistTest {
         System.out.println("class dump of \""+obj.toString()+"\" :");
         for (Field field : obj.getClass().getDeclaredFields()) {
             // You might want to set modifier to public first.
-            field.setAccessible(true); 
+            field.setAccessible(true);
 
             try {
                 Object value = field.get(obj);
                 if (value != null) {
                     if (value.getClass().equals(String.class)) {
-                        System.out.println(" "+field.getName() + " = \"" + value+"\"");                        
+                        System.out.println(" "+field.getName() + " = \"" + value+"\"");
                     } else {
                         System.out.println(" "+field.getName() + " = " + value);
                     }
                 } else {
                     System.out.println(" "+field.getName() + " = null");
-                }                
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();

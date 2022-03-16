@@ -239,7 +239,7 @@ public class FortranNamelist {
 
             // in a String "1234.234 myvar", look for the varname "myvar"
             // and also array index varnames, p.ex. "myarr(-2, 4:6)"
-            Pattern nextVarNamePattern = Pattern.compile("([a-z]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
+            Pattern nextVarNamePattern = Pattern.compile("([a-z_]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
 
             int i=0, last_i=0;
             int var_counter=0;

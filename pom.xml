@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>de.labathome</groupId>
 		<artifactId>de-labathome-parent</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.5</version>
 	</parent>
 
 	<artifactId>FortranNamelist</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>FortranNamelist</name>
@@ -33,6 +33,10 @@
 		<url>${jonathanschilling.git.url}${project.name}/issues</url>
 		<system>GitLab Issues</system>
 	</issueManagement>
+	
+	<properties>
+		<java_version>17</java_version>
+	</properties>
 
 	<build>
 		<resources>

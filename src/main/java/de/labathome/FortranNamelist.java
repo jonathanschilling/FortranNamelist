@@ -128,9 +128,8 @@ public class FortranNamelist {
                         }
                     }
                 }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+            	throw new RuntimeException(e);
             }
         }
 
@@ -147,6 +146,10 @@ public class FortranNamelist {
         while (namelist.indexOf("!") > -1) {
             int commentStart = namelist.indexOf("!");
             int lineEnd = namelist.indexOf("\n", commentStart);
+            if (lineEnd == -1) {
+            	// no newline is at the end of the file
+            	lineEnd = namelist.length() - 1;
+            }
 
             if (_debug) {
                 System.out.println("INFO: found !-comment from " + commentStart + " to " + lineEnd+":");
@@ -170,8 +173,11 @@ public class FortranNamelist {
             if (commentStart < 0) {
                 commentStart = namelist.indexOf("\nc ")+1;
                 lineEnd = namelist.indexOf("\n", commentStart);
+                if (lineEnd == -1) {
+                	// no newline is at the end of the file
+                	lineEnd = namelist.length() - 1;
+                }
             }
-
 
             if (_debug) {
                 System.out.println("INFO: found c-comment from " + commentStart + " to " + lineEnd+":");
@@ -239,7 +245,8 @@ public class FortranNamelist {
 
             // in a String "1234.234 myvar", look for the varname "myvar"
             // and also array index varnames, p.ex. "myarr(-2, 4:6)"
-            Pattern nextVarNamePattern = Pattern.compile("([a-z_]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
+//          Pattern nextVarNamePattern = Pattern.compile("([a-z_]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*)?\\s*(,?(\\s*[-+]?\\s*[0-9]+(\\s*:(\\s*[-+]?\\s*[0-9]+))*))\\s*\\))?$");
+            Pattern nextVarNamePattern = Pattern.compile("([a-z_]+[0-9_]*[a-z_]*)\\s*(\\((\\s*[-+]?\\s*[0-9]*(\\s*:(\\s*[-+]?\\s*[0-9]*))*)?\\s*(,(\\s*[-+]?\\s*[0-9]*(\\s*:(\\s*[-+]?\\s*[0-9]*))*)?)*\\s*\\))?$");
 
             int i=0, last_i=0;
             int var_counter=0;
@@ -491,18 +498,37 @@ public class FortranNamelist {
                                         } else {
                                             // check for range specifiers in indices
                                             if (indexString.contains(":")) {
-                                                String[] rowRangeParts = indexString.split(":");
-                                                int idxStart = Integer.valueOf(rowRangeParts[0].trim());
-                                                int idxEnd   = Integer.valueOf(rowRangeParts[1].trim());
+                                            	String[] inValues = val.split("[\\s,]+");
+                                            	int idxStart;
+                                            	int idxEnd;
+                                            	if (indexString.length() == 1) {
+                                            		// case a3) wildcard: "myarr(:) = 1.0, 2.0, 3.0"
+                                            		idxStart = dim0min_val;
+                                            		idxEnd = inValues.length-1 + dim0min_val;
+                                            	} else {
+                                            		// TODO: also need case for only idxStart (5:) or only idxEnd (:8) being specified
+	                                                String[] rowRangeParts = indexString.split(":");
+	                                                idxStart = Integer.valueOf(rowRangeParts[0].trim());
+	                                                idxEnd   = Integer.valueOf(rowRangeParts[1].trim());
+                                            	}
                                                 if (idxStart >= idxEnd) {
                                                     System.out.println("error: start index >= end index in range specification for "+name+": " + indexString);
-                                                } else if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxStart, name)
-                                                    && allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxEnd, name)) {
-                                                    // insert into all possible positions
-                                                    for (int idx = idxStart; idx <= idxEnd; ++idx) {
-                                                        // take potentially negative minimum indices into account...
-                                                        value[idx-dim0min_val] = Integer.valueOf(val);
-                                                    }
+                                                } else if (
+                                                		allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxStart, name) &&
+                                                		allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxEnd,   name)) {
+                                                	if (inValues.length == 1) {
+                                                        // insert the same value into all possible positions
+                                                    	int constantValue = Integer.valueOf(inValues[0]);
+                                                        for (int idx = idxStart; idx <= idxEnd; ++idx) {
+                                                            // take potentially negative minimum indices into account...
+                                                            value[idx-dim0min_val] = constantValue;
+                                                        }
+                                                	} else {
+                                                        for (int idx = idxStart; idx <= idxEnd; ++idx) {
+                                                            // take potentially negative minimum indices into account...
+                                                            value[idx-dim0min_val] = Integer.valueOf(inValues[idx - idxStart]);
+                                                        }
+                                                	}
                                                 }
                                             } else {
                                                 // single entry specified
@@ -576,23 +602,43 @@ public class FortranNamelist {
                                     if (arrayIndexSpecifierFound) {
                                         // a1) indexed value: myarr(  3) = 5.64e4  => insert at given position
                                         // a2)   range index: myarr(3:5) = 0.0     => insert into all given positions
+                                    	// a3)      wildcard: myarr( : ) = 1.0, 2.0 => insert starting from beginning what is given
                                         if (indexString.contains(",")) {
                                             if (_debug) System.out.println("error: try to put value into 1d "+name+" at location indicated by more than one index: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
                                             if (indexString.contains(":")) {
-                                                String[] rowRangeParts = indexString.split(":");
-                                                int idxStart = Integer.valueOf(rowRangeParts[0].trim());
-                                                int idxEnd   = Integer.valueOf(rowRangeParts[1].trim());
+                                        		String[] inValues = val.split("[\\s,]+");
+                                            	int idxStart;
+                                            	int idxEnd;
+                                            	if (indexString.length() == 1) {
+                                            		// case a3) wildcard: "myarr(:) = 1.0, 2.0, 3.0"
+                                            		idxStart = dim0min_val;
+                                            		idxEnd = inValues.length-1 + dim0min_val;
+                                            	} else {
+                                            		// TODO: also need case for only idxStart (5:) or only idxEnd (:8) being specified
+	                                                String[] rowRangeParts = indexString.split(":");
+	                                                idxStart = Integer.valueOf(rowRangeParts[0].trim());
+	                                                idxEnd   = Integer.valueOf(rowRangeParts[1].trim());
+                                            	}
                                                 if (idxStart >= idxEnd) {
                                                     System.out.println("error: start index >= end index in range specification for "+name+": " + indexString);
-                                                } else if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxStart, name)
-                                                    && allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxEnd, name)) {
-                                                    // insert into all possible positions
-                                                    for (int idx = idxStart; idx <= idxEnd; ++idx) {
-                                                        // take potentially negative minimum indices into account...
-                                                        value[idx-dim0min_val] = Double.valueOf(val);
-                                                    }
+                                                } else if (
+                                                		allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxStart, name) &&
+                                                		allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idxEnd,   name)) {
+                                                	if (inValues.length == 1) {
+                                                        // insert the same value into all possible positions
+                                                    	double constantValue = Double.valueOf(inValues[0]);
+                                                        for (int idx = idxStart; idx <= idxEnd; ++idx) {
+                                                            // take potentially negative minimum indices into account...
+                                                            value[idx-dim0min_val] = constantValue;
+                                                        }
+                                                	} else {
+                                                        for (int idx = idxStart; idx <= idxEnd; ++idx) {
+                                                            // take potentially negative minimum indices into account...
+                                                            value[idx-dim0min_val] = Double.valueOf(inValues[idx - idxStart]);
+                                                        }
+                                                	}
                                                 }
                                             } else {
                                                 // single entry specified
@@ -894,7 +940,7 @@ public class FortranNamelist {
                                     throw new RuntimeException("Type " + type + " is not implemented yet in FortranNamelist parser!");
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                throw new RuntimeException(e);
                             }
                         }
 

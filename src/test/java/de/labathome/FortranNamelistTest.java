@@ -59,74 +59,74 @@ public class FortranNamelistTest {
 	}
 
 	@Test
-	void vmecInputTest_AsMessyAsPossible() throws IOException {
+	void vmecIndataTest_AsMessyAsPossible() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.AsMessyAsPossible";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(8, vmecInput.mpol);
-		Assertions.assertEquals(8, vmecInput.ntor);
-		Assertions.assertEquals(22, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(8, vmecIndata.mpol);
+		Assertions.assertEquals(8, vmecIndata.ntor);
+		Assertions.assertEquals(22, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 51;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-19;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 100000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// Global Physics Parameters
-		Assertions.assertEquals(1.86086390731511, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(1.86086390731511, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("two_power", vmecInput.pmass_type.trim());
+		Assertions.assertEquals("two_power", vmecIndata.pmass_type.trim());
 
 		double[] am = new double[21];
 		am[0] = 66978.0973204654;
 		am[1] = 1.90820658424883;
 		am[2] = 4.46347452430851;
-		Assertions.assertArrayEquals(am, vmecInput.am);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
 
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.trim());
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.trim());
 
 		double[] ai = new double[21];
 		ai[3] = 1.0;
 		ai[4] = 1.0;
-		Assertions.assertArrayEquals(ai, vmecInput.ai);
+		Assertions.assertArrayEquals(ai, vmecIndata.ai);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("sum_atan", vmecInput.pcurr_type.trim());
+		Assertions.assertEquals("sum_atan", vmecIndata.pcurr_type.trim());
 
 		double[] ac = new double[21];
 		ac[1] = 1.0;
@@ -137,17 +137,17 @@ public class FortranNamelistTest {
 		ac[6] = 4.97719715801010;
 		ac[7] = 1.0;
 		ac[8] = 1.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
 
-		Assertions.assertEquals(-913.791680825795, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals(-913.791680825795, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecInput.mgrid_file.trim());
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecIndata.mgrid_file.trim());
 
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = -12989.0;
@@ -155,21 +155,21 @@ public class FortranNamelistTest {
 		extcur[2] = -12989.0;
 		extcur[3] = -12989.0;
 		extcur[4] = -12989.0;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
 
-		Assertions.assertEquals(10, vmecInput.nvacskip);
+		Assertions.assertEquals(10, vmecIndata.nvacskip);
 
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
 		aphi[14] = 1.4;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
 
-		Assertions.assertEquals(0.9, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertEquals(0.9, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
@@ -182,7 +182,7 @@ public class FortranNamelistTest {
 		raxis_cc[6] = -9.461962764212337E-005;
 		raxis_cc[7] = -2.828730415733434E-005;
 		raxis_cc[8] = -1.554463199957404E-004;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[1] = -0.301269608014063;
@@ -193,7 +193,7 @@ public class FortranNamelistTest {
 		zaxis_cs[6] = -5.489994367001566E-006;
 		zaxis_cs[7] = 2.463216529452668E-005;
 		zaxis_cs[8] = -1.340415732215003E-004;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cs[1] = -2.093456611578366E-016;
@@ -204,7 +204,7 @@ public class FortranNamelistTest {
 		raxis_cs[6] = 1.290964910473326E-015;
 		raxis_cs[7] = -1.116510192841796E-015;
 		raxis_cs[8] = 2.233020385683591E-015;
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cc[1] = 3.679904200040097E-017;
@@ -215,7 +215,7 @@ public class FortranNamelistTest {
 		zaxis_cc[6] = 8.450150385277261E-018;
 		zaxis_cc[7] = -5.642519773394817E-017;
 		zaxis_cc[8] = 4.497660688937897E-018;
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// (Initial Guess for) Boundary Geometry
 
@@ -362,7 +362,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 7][7] = -2.029459227327149E-004;
 		rbc[VmecIndataNamelist.ntord + 8][7] = 5.906682990243203E-006;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
@@ -501,62 +501,62 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 7][7] = 1.038283071268155E-004;
 		zbs[VmecIndataNamelist.ntord + 8][7] = -2.979906810937261E-006;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	// EXTCUR has spaces in indices
 	@Test
-	void vmecInputTest_BETA_5_ICUR_5K() throws IOException {
+	void vmecIndataTest_BETA_5_ICUR_5K() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.BETA_5_ICUR_5K";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(8, vmecInput.mpol);
-		Assertions.assertEquals(8, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(8, vmecIndata.mpol);
+		Assertions.assertEquals(8, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 51;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-19;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 100000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-1.7104, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(-1.7104, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("two_lorentz", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("two_lorentz", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 1.0;
 		am[1] = 1.0;
@@ -566,39 +566,39 @@ public class FortranNamelistTest {
 		am[5] = 1.0;
 		am[6] = 1.0;
 		am[7] = 1.0;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(50.0e3, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(50.0e3, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("sum_atan", vmecInput.pcurr_type.toLowerCase());
+		Assertions.assertEquals("sum_atan", vmecIndata.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 0.0;
 		ac[1] = 1.0;
 		ac[2] = 1.0;
 		ac[3] = 1.5;
 		ac[4] = 1.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(5000.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(5000.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = 1.28700e+04;
 		extcur[1] = 1.31220e+04;
@@ -607,33 +607,33 @@ public class FortranNamelistTest {
 		extcur[4] = 1.08440e+04;
 		extcur[5] = -1.0;
 		extcur[6] = -1.0;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(10, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(10, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(1.0, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(1.0, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 5.5607E+00;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -642,45 +642,45 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 0][0] = 5.5210E+00;
 		rbc[VmecIndataNamelist.ntord + 1][0] = 2.7849e-01;
 		rbc[VmecIndataNamelist.ntord + 0][1] = 4.8900E-01;
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
 		zbs[VmecIndataNamelist.ntord + 1][0] = -2.3504e-01;
 		zbs[VmecIndataNamelist.ntord + 0][1] = 6.2496E-01;
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	// => forgot value of am
 	@Test
-	void vmecInputTest_dboe_id_1000_1000_1000_1000_() throws IOException {
+	void vmecIndataTest_dboe_id_1000_1000_1000_1000_() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.dboe_id_1000_1000_1000_1000_+0000_+0000_v_00_pres_00_it_6";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(12, vmecInput.mpol);
-		Assertions.assertEquals(12, vmecInput.ntor);
-		Assertions.assertEquals(32, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(12, vmecIndata.mpol);
+		Assertions.assertEquals(12, vmecIndata.ntor);
+		Assertions.assertEquals(32, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
@@ -689,93 +689,93 @@ public class FortranNamelistTest {
 		ns_array[1] = 9;
 		ns_array[2] = 28;
 		ns_array[3] = 99;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-3;
 		ftol_array[1] = 1.0e-5;
 		ftol_array[2] = 1.0e-9;
 		ftol_array[3] = 1.0e-14;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 100000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-1.8, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(-1.8, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 0.0;
 		ac[1] = 1.0;
 		ac[2] = -1.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(44000.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(44000.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = 12882.480489739242;
 		extcur[1] = 12882.480489739242;
 		extcur[2] = 12882.480489739242;
 		extcur[3] = 12882.480489739242;
 		extcur[4] = 12882.480489739242;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(6, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(6, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(100, vmecInput.nstep);
+		Assertions.assertEquals(100, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.6, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.6, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 5.5607;
 		raxis_cc[1] = 0.37075;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[1] = -0.30815;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -873,7 +873,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 5][6] = -6.1283E-4;
 		rbc[VmecIndataNamelist.ntord + 6][6] = 1.218E-4;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
@@ -968,63 +968,63 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 5][6] = 9.9096E-5;
 		zbs[VmecIndataNamelist.ntord + 6][6] = 3.3856E-5;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
-	void vmecInputTest_demo_vmec6_90() throws IOException {
+	void vmecIndataTest_demo_vmec6_90() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.demo_vmec6_90";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(1, vmecInput.nfp);
-		Assertions.assertEquals(6, vmecInput.mpol);
-		Assertions.assertEquals(0, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(0, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(1, vmecIndata.nfp);
+		Assertions.assertEquals(6, vmecIndata.mpol);
+		Assertions.assertEquals(0, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(0, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 16;
 		ns_array[1] = 31;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-6;
 		ftol_array[1] = 5.0e-11;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 600);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-1.3534E+01, vmecInput.phiedge);
-		Assertions.assertEquals(0, vmecInput.ncurr);
+		Assertions.assertEquals(-1.3534E+01, vmecIndata.phiedge);
+		Assertions.assertEquals(0, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 0.2762993401771816E6;
 		am[1] = -1.398637555311701E6;
@@ -1033,16 +1033,16 @@ public class FortranNamelistTest {
 		am[4] = 30.46522063279099E6;
 		am[5] = -23.99696824024823E6;
 		am[6] = 7.363942466650127E6;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
 		double[] ai = new double[21];
 		ai[0] = 2.354498895432447;
 		ai[1] = -9.907517672615517;
@@ -1051,56 +1051,56 @@ public class FortranNamelistTest {
 		ai[4] = 188.6838680668763;
 		ai[5] = -143.1773314731515;
 		ai[6] = 42.19838185779675;
-		Assertions.assertArrayEquals(ai, vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertArrayEquals(ai, vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(1.582E+06, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(1.582E+06, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid.tftr", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid.tftr", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = -6.800E+01;
 		extcur[1] = -1.070E+01;
 		extcur[2] = 1.435E+01;
 		extcur[3] = -1.405E+01;
 		extcur[4] = 2.498E-02;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(12, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(12, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(100, vmecInput.nstep);
+		Assertions.assertEquals(100, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(1.0, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(1.0, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 2.772E+00;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -1108,134 +1108,134 @@ public class FortranNamelistTest {
 		double[][] rbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		rbc[VmecIndataNamelist.ntord + 0][0] = 2.599E+00;
 		rbc[VmecIndataNamelist.ntord + 0][1] = 9.370E-01;
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][1] = 9.590E-01;
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
-	void vmecInputTest_demo3d_vmec6_90() throws IOException {
+	void vmecIndataTest_demo3d_vmec6_90() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.demo3d_vmec6_90";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(12, vmecInput.nfp);
-		Assertions.assertEquals(6, vmecInput.mpol);
-		Assertions.assertEquals(6, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(0, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(12, vmecIndata.nfp);
+		Assertions.assertEquals(6, vmecIndata.mpol);
+		Assertions.assertEquals(6, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(0, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 26;
 		ns_array[1] = 51;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-8;
 		ftol_array[1] = 1.0e-11;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 3000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(0.23, vmecInput.phiedge);
-		Assertions.assertEquals(0, vmecInput.ncurr);
+		Assertions.assertEquals(0.23, vmecIndata.phiedge);
+		Assertions.assertEquals(0, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 3.6500000E+04;
 		am[1] = -7.300000E+04;
 		am[2] = 3.650000E+04;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(1.667, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(1.667, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
 		double[] ai = new double[21];
 		ai[0] = 0.3000000;
 		ai[1] = 0.4200000;
 		ai[2] = 0.2500000;
-		Assertions.assertArrayEquals(ai, vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertArrayEquals(ai, vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(0.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(0.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("NONE", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("NONE", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = -3.9385E2;
 		extcur[1] = 29.4795;
 		extcur[2] = -61.3872;
 		extcur[3] = -3.133E-2;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(12, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(12, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(1.0, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(1.0, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 1.72;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -1251,7 +1251,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 1][3] = -7.2860E-04;
 		rbc[VmecIndataNamelist.ntord + 0][4] =  2.0864E-04;
 		rbc[VmecIndataNamelist.ntord + 1][4] = -5.1596E-04;
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] =  0.0000E+00;
@@ -1264,38 +1264,38 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 1][3] = -7.2860E-04;
 		zbs[VmecIndataNamelist.ntord + 0][4] =  2.0864E-04;
 		zbs[VmecIndataNamelist.ntord + 1][4] = -5.1596E-04;
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
-	void vmecInputTest_ffhr_d1_nflux_v1() throws IOException {
+	void vmecIndataTest_ffhr_d1_nflux_v1() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.ffhr_d1_nflux_v1.1";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(10, vmecInput.nfp);
-		Assertions.assertEquals(10, vmecInput.mpol);
-		Assertions.assertEquals(8, vmecInput.ntor);
-		Assertions.assertEquals(32, vmecInput.ntheta);
-		Assertions.assertEquals(32, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(10, vmecIndata.nfp);
+		Assertions.assertEquals(10, vmecIndata.mpol);
+		Assertions.assertEquals(8, vmecIndata.ntor);
+		Assertions.assertEquals(32, vmecIndata.ntheta);
+		Assertions.assertEquals(32, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
@@ -1303,26 +1303,26 @@ public class FortranNamelistTest {
 		ns_array[0] = 11;
 		ns_array[1] = 31;
 		ns_array[2] = 61;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-7;
 		ftol_array[1] = 1.0e-11;
 		ftol_array[2] = 1.0e-15;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 10000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-8.2523E+01, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(-8.2523E+01, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 1.1359E+06;
 		am[1] = -1.5154E+06;
@@ -1335,45 +1335,45 @@ public class FortranNamelistTest {
 		am[8] = -2.4165E+06;
 		am[9] = -4.2657E+06;
 		am[10] = 3.3914E+06;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(0.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(0.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(false, vmecInput.lfreeb);
-		Assertions.assertEquals("dummy", vmecInput.mgrid_file);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nigroup], vmecInput.extcur);
-		Assertions.assertEquals(10, vmecInput.nvacskip);
+		Assertions.assertEquals(false, vmecIndata.lfreeb);
+		Assertions.assertEquals("dummy", vmecIndata.mgrid_file);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nigroup], vmecIndata.extcur);
+		Assertions.assertEquals(10, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(500, vmecInput.nstep);
+		Assertions.assertEquals(500, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.9, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.9, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
@@ -1385,7 +1385,7 @@ public class FortranNamelistTest {
 		raxis_cc[4] = 0.6638E-06;
 		raxis_cc[5] = -0.9506E-06;
 		raxis_cc[6] = 0.3329E-06;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[1] = -0.1396E-01;
@@ -1394,13 +1394,13 @@ public class FortranNamelistTest {
 		zaxis_cs[4] = 0.9739E-06;
 		zaxis_cs[5] = 0.4574E-05;
 		zaxis_cs[6] = 0.8842E-06;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -1512,7 +1512,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 5][7] =  5.4404E-04;
 		rbc[VmecIndataNamelist.ntord + 6][7] =  1.5693E-04;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] =  0.0000E+00;
@@ -1621,124 +1621,124 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 5][7] = -3.2861E-05;
 		zbs[VmecIndataNamelist.ntord + 6][7] =  4.2161E-05;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 
 	@Test
-	void vmecInputTest_ITER_nflux_verification_0001() throws IOException {
+	void vmecIndataTest_ITER_nflux_verification_0001() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.ITER_nflux_verification_0001.0001";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(1, vmecInput.nfp);
-		Assertions.assertEquals(5, vmecInput.mpol);
-		Assertions.assertEquals(0, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(1, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(1, vmecIndata.nfp);
+		Assertions.assertEquals(5, vmecIndata.mpol);
+		Assertions.assertEquals(0, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(1, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 100;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-20;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 25000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(1.54721E3, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(1.54721E3, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("two_power", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("two_power", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 1.0;
 		am[1] = 5.0;
 		am[2] = 10.0;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(9.21730E5, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(9.21730E5, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("two_power", vmecInput.pcurr_type.toLowerCase());
+		Assertions.assertEquals("two_power", vmecIndata.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 1.0;
 		ac[1] = 5.0;
 		ac[2] = 10.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(18.595E6, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(18.595E6, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(false, vmecInput.lfreeb);
-		Assertions.assertEquals("NONE", vmecInput.mgrid_file);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nigroup], vmecInput.extcur);
-		Assertions.assertEquals(9, vmecInput.nvacskip);
+		Assertions.assertEquals(false, vmecIndata.lfreeb);
+		Assertions.assertEquals("NONE", vmecIndata.mgrid_file);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nigroup], vmecIndata.extcur);
+		Assertions.assertEquals(9, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(1.0, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(1.0, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 6.21;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -1747,42 +1747,42 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 0][0] = 6.21;
 		rbc[VmecIndataNamelist.ntord + 0][1] = 2.00;
 		rbc[VmecIndataNamelist.ntord + 0][2] = 0.4952;
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][1] = 3.684;
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
-	void vmecInputTest_JDHtest7() throws IOException {
+	void vmecIndataTest_JDHtest7() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.JDHtest7";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(3, vmecInput.nfp);
-		Assertions.assertEquals(9, vmecInput.mpol);
-		Assertions.assertEquals(6, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(32, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(3, vmecIndata.nfp);
+		Assertions.assertEquals(9, vmecIndata.mpol);
+		Assertions.assertEquals(6, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(32, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
@@ -1790,26 +1790,26 @@ public class FortranNamelistTest {
 		ns_array[0] = 13;
 		ns_array[1] = 25;
 		ns_array[2] = 49;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-6;
 		ftol_array[1] = 1.0e-6;
 		ftol_array[2] = 1.0e-11;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 2500);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(5.07375027776403E-01, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(5.07375027776403E-01, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 5.37278520000000E+04;
 		am[1] = -4.01304760000000E+03;
@@ -1819,23 +1819,23 @@ public class FortranNamelistTest {
 		am[5] = -2.51988380000000E+06;
 		am[6] = 2.10862500000000E+06;
 		am[7] = -6.40367620000000E+05;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 8.18395699999999E+03;
 		ac[1] = 1.43603560000000E+06;
@@ -1847,16 +1847,16 @@ public class FortranNamelistTest {
 		ac[7] = 1.52746800000000E+09;
 		ac[8] = -8.67901590000000E+08;
 		ac[9] = 2.10351200000000E+08;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(-1.74250000000000E+05, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(-1.74250000000000E+05, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid_c01r00_z16mod.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid_c01r00_z16mod.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = 6.96686783152366E+05;
 		extcur[1] = 6.53525037003549E+05;
@@ -1866,18 +1866,18 @@ public class FortranNamelistTest {
 		extcur[7] = 5.70890000000000E+04;
 		extcur[8] = -3.87772300000000E+03;
 		extcur[9] = 2.17549077362584E+04;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(6, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(6, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.9, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.9, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
@@ -1889,7 +1889,7 @@ public class FortranNamelistTest {
 		raxis_cc[4] = -2.02185338333559E-04;
 		raxis_cc[5] = -6.47478490773586E-05;
 		raxis_cc[6] = 1.32082168157713E-05;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[1] = -5.65210082402504E-02;
@@ -1898,13 +1898,13 @@ public class FortranNamelistTest {
 		zaxis_cs[4] = 1.33306425930255E-04;
 		zaxis_cs[5] = -9.41641794761882E-06;
 		zaxis_cs[6] = -1.44303491413310E-05;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -2030,7 +2030,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 5][8] =  4.77644916433333E-04;
 		rbc[VmecIndataNamelist.ntord + 6][8] =  4.03892509040954E-04;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] =  0.00000000000000E+00;
@@ -2153,62 +2153,62 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 5][8] =  1.87096527574704E-04;
 		zbs[VmecIndataNamelist.ntord + 6][8] =  2.81418831862846E-04;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
-	void vmecInputTest_minerva() throws IOException {
+	void vmecIndataTest_minerva() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.minerva-vmec-9aea06f0c9b27276d9a55c2817eda280";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(9, vmecInput.mpol);
-		Assertions.assertEquals(9, vmecInput.ntor);
-		Assertions.assertEquals(31, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(9, vmecIndata.mpol);
+		Assertions.assertEquals(9, vmecIndata.ntor);
+		Assertions.assertEquals(31, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 51;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-19;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 40000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(1.7699999999999996, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(1.7699999999999996, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("cubic_spline", vmecInput.pmass_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.am);
+		Assertions.assertEquals("cubic_spline", vmecIndata.pmass_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.am);
 		double[] am_aux_s = new double[VmecIndataNamelist.nsd];
 		am_aux_s[0] = 0.0;
 		am_aux_s[1] = 0.05263157894736842;
@@ -2230,7 +2230,7 @@ public class FortranNamelistTest {
 		am_aux_s[17] = 0.894736842105263;
 		am_aux_s[18] = 0.9473684210526315;
 		am_aux_s[19] = 1.0;
-		Assertions.assertArrayEquals(am_aux_s, vmecInput.am_aux_s);
+		Assertions.assertArrayEquals(am_aux_s, vmecIndata.am_aux_s);
 		double[] am_aux_f = new double[VmecIndataNamelist.nsd];
 		am_aux_f[0] = 15000.0;
 		am_aux_f[1] = 14909.166131292528;
@@ -2252,22 +2252,22 @@ public class FortranNamelistTest {
 		am_aux_f[17] = 5879.993807303139;
 		am_aux_f[18] = 4186.566653391287;
 		am_aux_f[19] = 0.0;
-		Assertions.assertArrayEquals(am_aux_f, vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am_aux_f, vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("cubic_spline_i", vmecInput.pcurr_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ac);
+		Assertions.assertEquals("cubic_spline_i", vmecIndata.pcurr_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ac);
 		double[] ac_aux_s = new double[VmecIndataNamelist.nsd];
 		ac_aux_s[0] = 0.0;
 		ac_aux_s[1] = 0.05263157894736842;
@@ -2289,7 +2289,7 @@ public class FortranNamelistTest {
 		ac_aux_s[17] = 0.894736842105263;
 		ac_aux_s[18] = 0.9473684210526315;
 		ac_aux_s[19] = 1.0;
-		Assertions.assertArrayEquals(ac_aux_s, vmecInput.ac_aux_s);
+		Assertions.assertArrayEquals(ac_aux_s, vmecIndata.ac_aux_s);
 		double[] ac_aux_f = new double[VmecIndataNamelist.nsd];
 		ac_aux_f[0] = 0.0;                   ;
 		ac_aux_f[1] = -2.2717840184115134E-17;
@@ -2311,14 +2311,14 @@ public class FortranNamelistTest {
 		ac_aux_f[17] = -0.001694662989805786;
 		ac_aux_f[18] = -0.0278172191370382;
 		ac_aux_f[19] = -46.450308147784405;
-		Assertions.assertArrayEquals(ac_aux_f, vmecInput.ac_aux_f);
-		Assertions.assertEquals(-1500.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac_aux_f, vmecIndata.ac_aux_f);
+		Assertions.assertEquals(-1500.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = -13068.0;
 		extcur[1] = -13068.0;
@@ -2327,36 +2327,36 @@ public class FortranNamelistTest {
 		extcur[4] = -13067.0;
 		extcur[5] = 698.0000000000001;
 		extcur[6] = 699.0000000000001;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(6, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(6, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(100, vmecInput.nstep);
+		Assertions.assertEquals(100, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.6, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.6, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 5.5617;
 		raxis_cc[1] = 0.37114;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[0] = -0.0;
 		zaxis_cs[1] = -0.30675;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -2454,7 +2454,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 5][6] = -4.6175E-4;
 		rbc[VmecIndataNamelist.ntord + 6][6] = 2.1078E-4;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = -0.0;
@@ -2549,113 +2549,113 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 5][6] = 1.9311E-4;
 		zbs[VmecIndataNamelist.ntord + 6][6] = 9.7126E-7;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 
 	@Test
-	void vmecInputTest_vmec_asym() throws IOException {
+	void vmecIndataTest_vmec_asym() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.test.vmec_asym";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(true, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(5, vmecInput.mpol);
-		Assertions.assertEquals(4, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(true, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(5, vmecIndata.mpol);
+		Assertions.assertEquals(4, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 15;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-20;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, -1);
 		niter_array[0] = 52;
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-0.035, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(-0.035, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("two_power", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("two_power", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 1.0;
 		am[1] = 5.0;
 		am[2] = 10.0;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(432.29080924603676, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(432.29080924603676, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("two_power", vmecInput.pcurr_type.toLowerCase());
+		Assertions.assertEquals("two_power", vmecIndata.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 1.0;
 		ac[1] = 5.0;
 		ac[2] = 10.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(43229.08092460368, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(43229.08092460368, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid_test.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid_test.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = 4700.0;
 		extcur[1] = 1000.0;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(9, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(9, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.7, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.7, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
@@ -2665,7 +2665,7 @@ public class FortranNamelistTest {
 		raxis_cc[2] = 0.000915258048528683;
 		raxis_cc[3] = -1.91959906744039e-05;
 		raxis_cc[4] = 1.45930777845745e-06;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[0] = 0.0;
@@ -2673,13 +2673,13 @@ public class FortranNamelistTest {
 		zaxis_cs[2] = -0.000937096584979097;
 		zaxis_cs[3] = 1.741833421328e-05;
 		zaxis_cs[4] = -5.91222841432118e-07;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -2731,7 +2731,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 3][4] = -7.45864378517666e-05;
 		rbc[VmecIndataNamelist.ntord + 4][4] = 1.0767515627784e-05;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
@@ -2780,82 +2780,82 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 3][4] = -5.07003662052117e-05;
 		zbs[VmecIndataNamelist.ntord + 4][4] = 5.22398328609138e-06;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 
 	@Test
-	void vmecInputTest_v3fit_jsch_20171207_006_2200ms_pm_10ms_v0_Bprecheck() throws IOException {
+	void vmecIndataTest_v3fit_jsch_20171207_006_2200ms_pm_10ms_v0_Bprecheck() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input.v3fit_jsch_20171207_006_2200ms_pm_10ms_v0_Bprecheck";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(8, vmecInput.mpol);
-		Assertions.assertEquals(8, vmecInput.ntor);
-		Assertions.assertEquals(22, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(8, vmecIndata.mpol);
+		Assertions.assertEquals(8, vmecIndata.ntor);
+		Assertions.assertEquals(22, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// Multi-Grid Steps
 		int[] ns_array = new int[100];
 		ns_array[0] = 51;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-19;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 100000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// Global Physics Parameters
-		Assertions.assertEquals(1.86086390731511, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(1.86086390731511, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("two_power", vmecInput.pmass_type.trim());
+		Assertions.assertEquals("two_power", vmecIndata.pmass_type.trim());
 
 		double[] am = new double[21];
 		am[0] = 66978.0973204654;
 		am[1] = 1.90820658424883;
 		am[2] = 4.46347452430851;
-		Assertions.assertArrayEquals(am, vmecInput.am);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
 
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.trim());
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.trim());
 
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("sum_atan", vmecInput.pcurr_type.trim());
+		Assertions.assertEquals("sum_atan", vmecIndata.pcurr_type.trim());
 
 		double[] ac = new double[21];
 		ac[1] = 1.0;
@@ -2866,17 +2866,17 @@ public class FortranNamelistTest {
 		ac[6] = 4.97719715801010;
 		ac[7] = 1.0;
 		ac[8] = 1.0;
-		Assertions.assertArrayEquals(ac, vmecInput.ac);
+		Assertions.assertArrayEquals(ac, vmecIndata.ac);
 
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
 
-		Assertions.assertEquals(-913.791680825795, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals(-913.791680825795, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecInput.mgrid_file.trim());
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("/u/jsch/v3fit_runs/MGRIDS/mgrid_w7x_v2_10mm_grid.nc", vmecIndata.mgrid_file.trim());
 
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = -12989.0;
@@ -2884,20 +2884,20 @@ public class FortranNamelistTest {
 		extcur[2] = -12989.0;
 		extcur[3] = -12989.0;
 		extcur[4] = -12989.0;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
 
-		Assertions.assertEquals(10, vmecInput.nvacskip);
+		Assertions.assertEquals(10, vmecIndata.nvacskip);
 
 		// Tweaking Parameters
-		Assertions.assertEquals(200, vmecInput.nstep);
+		Assertions.assertEquals(200, vmecIndata.nstep);
 
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
 
-		Assertions.assertEquals(0.9, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertEquals(0.9, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
@@ -2910,7 +2910,7 @@ public class FortranNamelistTest {
 		raxis_cc[6] = -9.461962764212337E-005;
 		raxis_cc[7] = -2.828730415733434E-005;
 		raxis_cc[8] = -1.554463199957404E-004;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[1] = -0.301269608014063;
@@ -2921,7 +2921,7 @@ public class FortranNamelistTest {
 		zaxis_cs[6] = -5.489994367001566E-006;
 		zaxis_cs[7] = 2.463216529452668E-005;
 		zaxis_cs[8] = -1.340415732215003E-004;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cs[1] = -2.093456611578366E-016;
@@ -2932,7 +2932,7 @@ public class FortranNamelistTest {
 		raxis_cs[6] = 1.290964910473326E-015;
 		raxis_cs[7] = -1.116510192841796E-015;
 		raxis_cs[8] = 2.233020385683591E-015;
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cc[1] = 3.679904200040097E-017;
@@ -2943,7 +2943,7 @@ public class FortranNamelistTest {
 		zaxis_cc[6] = 8.450150385277261E-018;
 		zaxis_cc[7] = -5.642519773394817E-017;
 		zaxis_cc[8] = 4.497660688937897E-018;
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// (Initial Guess for) Boundary Geometry
 
@@ -3084,7 +3084,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 7][7] = -2.029459227327149E-004;
 		rbc[VmecIndataNamelist.ntord + 8][7] = 5.906682990243203E-006;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
@@ -3223,39 +3223,39 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 7][7] = 1.038283071268155E-004;
 		zbs[VmecIndataNamelist.ntord + 8][7] = -2.979906810937261E-006;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 
 	@Test
-	void vmecInputTest_w7x() throws IOException {
+	void vmecIndataTest_w7x() throws IOException {
 		String inputFilename = "/de/labathome/FortranNamelist/input/input-w7x.txt";
 		InputStream inputFileStream = getClass().getResourceAsStream(inputFilename);
 
 		String inputFile = new String(inputFileStream.readAllBytes(), StandardCharsets.UTF_8);
 
-		VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+		VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 		// parse the namelist into a Java object
-		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		vmecInput = (VmecIndataNamelist) parser.getParsed();
-		assertNotNull(vmecInput);
-		vmecInput.sanitize();
+		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+		vmecIndata = (VmecIndataNamelist) parser.getParsed();
+		assertNotNull(vmecIndata);
+		vmecIndata.sanitize();
 
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
-		Assertions.assertEquals(false, vmecInput.lasym);
-		Assertions.assertEquals(5, vmecInput.nfp);
-		Assertions.assertEquals(12, vmecInput.mpol);
-		Assertions.assertEquals(12, vmecInput.ntor);
-		Assertions.assertEquals(0, vmecInput.ntheta);
-		Assertions.assertEquals(36, vmecInput.nzeta);
+		Assertions.assertEquals(false, vmecIndata.lasym);
+		Assertions.assertEquals(5, vmecIndata.nfp);
+		Assertions.assertEquals(12, vmecIndata.mpol);
+		Assertions.assertEquals(12, vmecIndata.ntor);
+		Assertions.assertEquals(0, vmecIndata.ntheta);
+		Assertions.assertEquals(36, vmecIndata.nzeta);
 
 		// --------------------
 		// Multi-Grid Steps
@@ -3264,57 +3264,57 @@ public class FortranNamelistTest {
 		ns_array[1] = 9;
 		ns_array[2] = 28;
 		ns_array[3] = 99;
-		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+		Assertions.assertArrayEquals(ns_array, vmecIndata.ns_array);
 
 		double[] ftol_array = new double[100];
 		ftol_array[0] = 1.0e-5;
 		ftol_array[1] = 1.0e-7;
 		ftol_array[2] = 1.0e-8;
 		ftol_array[3] = 1.0e-14;
-		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+		Assertions.assertArrayEquals(ftol_array, vmecIndata.ftol_array);
 
 		int[] niter_array = new int[100];
 		Arrays.fill(niter_array, 8000);
-		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
+		Assertions.assertArrayEquals(niter_array, vmecIndata.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		Assertions.assertEquals(-1.29, vmecInput.phiedge);
-		Assertions.assertEquals(1, vmecInput.ncurr);
+		Assertions.assertEquals(-1.29, vmecIndata.phiedge);
+		Assertions.assertEquals(1, vmecIndata.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertEquals("power_series", vmecIndata.pmass_type.toLowerCase());
 		double[] am = new double[21];
 		am[0] = 1.0e-6;
 		am[1] = -1.0e-6;
-		Assertions.assertArrayEquals(am, vmecInput.am);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
-		Assertions.assertEquals(1.0, vmecInput.pres_scale);
-		Assertions.assertEquals(0.0, vmecInput.gamma);
-		Assertions.assertEquals(1.0, vmecInput.spres_ped);
+		Assertions.assertArrayEquals(am, vmecIndata.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.am_aux_f);
+		Assertions.assertEquals(1.0, vmecIndata.pres_scale);
+		Assertions.assertEquals(0.0, vmecIndata.gamma);
+		Assertions.assertEquals(1.0, vmecIndata.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
+		Assertions.assertEquals("power_series", vmecIndata.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
-		Assertions.assertArrayEquals(new double[21], vmecInput.ac);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
-		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
-		Assertions.assertEquals(0.0, vmecInput.curtor);
-		Assertions.assertEquals(1.0, vmecInput.bloat);
+		Assertions.assertEquals("power_series", vmecIndata.pcurr_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecIndata.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecIndata.ac_aux_f);
+		Assertions.assertEquals(0.0, vmecIndata.curtor);
+		Assertions.assertEquals(1.0, vmecIndata.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		Assertions.assertEquals(true, vmecInput.lfreeb);
-		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecInput.mgrid_file);
+		Assertions.assertEquals(true, vmecIndata.lfreeb);
+		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecIndata.mgrid_file);
 		double[] extcur = new double[VmecIndataNamelist.nigroup];
 		extcur[0] = 14000.0;
 		extcur[1] = 14000.0;
@@ -3323,36 +3323,36 @@ public class FortranNamelistTest {
 		extcur[4] = 12390.0;
 		extcur[5] = -9660.0;
 		extcur[6] = -9660.0;
-		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
-		Assertions.assertEquals(6, vmecInput.nvacskip);
+		Assertions.assertArrayEquals(extcur, vmecIndata.extcur);
+		Assertions.assertEquals(6, vmecIndata.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		Assertions.assertEquals(100, vmecInput.nstep);
+		Assertions.assertEquals(100, vmecIndata.nstep);
 		double[] aphi = new double[20];
 		aphi[0] = 1.0;
-		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
-		Assertions.assertEquals(0.9, vmecInput.delt);
-		Assertions.assertEquals(1.0, vmecInput.tcon0);
-		Assertions.assertEquals(false, vmecInput.lforbal);
+		Assertions.assertArrayEquals(aphi, vmecIndata.aphi);
+		Assertions.assertEquals(0.9, vmecIndata.delt);
+		Assertions.assertEquals(1.0, vmecIndata.tcon0);
+		Assertions.assertEquals(false, vmecIndata.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
 		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
 		raxis_cc[0] = 5.5461E+00;
 		raxis_cc[1] = 3.8004E-01;
-		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
+		Assertions.assertArrayEquals(raxis_cc, vmecIndata.raxis_cc);
 
 		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
 		zaxis_cs[0] = 0.0;
 		zaxis_cs[1] = -3.0390E-01;
-		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+		Assertions.assertArrayEquals(zaxis_cs, vmecIndata.zaxis_cs);
 
 		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+		Assertions.assertArrayEquals(raxis_cs, vmecIndata.raxis_cs);
 
 		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
-		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
+		Assertions.assertArrayEquals(zaxis_cc, vmecIndata.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
@@ -3404,7 +3404,7 @@ public class FortranNamelistTest {
 		rbc[VmecIndataNamelist.ntord + 3][4] = -5.0041e-04;
 		rbc[VmecIndataNamelist.ntord + 4][4] = -5.9196e-04;
 		//
-		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+		Assertions.assertArrayEquals(rbc, vmecIndata.rbc);
 
 		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		zbs[VmecIndataNamelist.ntord + 0][0] = -0.0000e+00;
@@ -3453,13 +3453,13 @@ public class FortranNamelistTest {
 		zbs[VmecIndataNamelist.ntord + 3][4] = -5.6303e-03;
 		zbs[VmecIndataNamelist.ntord + 4][4] = -2.8346e-04;
 		//
-		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+		Assertions.assertArrayEquals(zbs, vmecIndata.zbs);
 
 		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+		Assertions.assertArrayEquals(rbs, vmecIndata.rbs);
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
-		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+		Assertions.assertArrayEquals(zbc, vmecIndata.zbc);
 	}
 
 	@Test
@@ -3494,13 +3494,13 @@ public class FortranNamelistTest {
 				// --------------
 				// now try parsing the INDATA namelist
 
-				VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+				VmecIndataNamelist vmecIndata = new VmecIndataNamelist();
 
 				// parse the namelist into a Java object
-				FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-				vmecInput = (VmecIndataNamelist) parser.getParsed();
-				assertNotNull(vmecInput);
-				vmecInput.sanitize();
+				FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecIndata);
+				vmecIndata = (VmecIndataNamelist) parser.getParsed();
+				assertNotNull(vmecIndata);
+				vmecIndata.sanitize();
 
 //				System.out.println(shortId);
 			}

@@ -1143,6 +1143,10 @@ public class VmecIndataNamelist {
 			}
 		}
 
+		if (delt > 1.0) {
+			delt = 1.0;
+		}
+
 		if (tcon0 > 1.0) {
 			tcon0 = 1.0;
 		}

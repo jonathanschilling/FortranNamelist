@@ -511,6 +511,7 @@ public class FortranNamelist {
 	                                                idxStart = Integer.valueOf(rowRangeParts[0].trim());
 	                                                idxEnd   = Integer.valueOf(rowRangeParts[1].trim());
                                             	}
+
                                                 if (idxStart >= idxEnd) {
                                                     System.out.println("error: start index >= end index in range specification for "+name+": " + indexString);
                                                 } else if (
@@ -720,7 +721,7 @@ public class FortranNamelist {
                                             if (_debug) System.out.println("error: try to put value into 2d "+name+" at location indicated by more than two indices: " + indexString);
                                         } else {
                                             // check for range specifiers in indices
-                                            if (strIndices[0].contains(":") ||strIndices[1].contains(":")) {
+                                            if (strIndices[0].contains(":") || strIndices[1].contains(":")) {
                                                 int row_start = 0, row_end = 0, col_start = 0, col_end = 0;
                                                 if (strIndices[0].contains(":")) {
                                                     String[] rowRangeParts = strIndices[0].split(":");
@@ -754,14 +755,32 @@ public class FortranNamelist {
                                                     }
                                                 }
                                             } else {
-                                                // single entry specified
-                                                int idx_row = Integer.valueOf(strIndices[0].trim());
+                                                // single entry specified (if single value)
+                                            	// or
+                                            	// starting position specified (if multiple values)
+
+                                            	int idx_row = Integer.valueOf(strIndices[0].trim());
                                                 int idx_col = Integer.valueOf(strIndices[1].trim());
 
                                                 if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idx_row, name)
                                                     && allowedArrayIndex(dim1min_val, value[0].length-1+dim1min_val, idx_col, name)) {
-                                                    // take potentially negative minimum indices into account...
-                                                    value[idx_row-dim0min_val][idx_col-dim1min_val] = Integer.valueOf(val);
+
+                                                	if (val.contains(",") || val.contains(" ")) {
+                                                		// multiple entries
+                                                		String[] values = val.split("[\\s]*,");
+
+                                                		for (int idxValue = 0; idxValue < values.length; ++idxValue) {
+
+                                                			int slowOffset = idxValue / value.length;
+                                                			int fastOffset = idxValue % value.length;
+
+                                                			value[idx_row-dim0min_val + fastOffset][idx_col-dim1min_val + slowOffset] = Integer.valueOf(values[idxValue].trim());
+                                                		}
+
+                                                	} else {
+	                                                    // take potentially negative minimum indices into account...
+	                                                	value[idx_row-dim0min_val][idx_col-dim1min_val] = Integer.valueOf(val);
+                                                	}
                                                 }
                                             }
                                         }
@@ -872,13 +891,31 @@ public class FortranNamelist {
                                                 }
                                             } else {
                                                 // single entry specified
-                                                int idx_row = Integer.valueOf(strIndices[0].trim());
+                                            	// or
+                                            	// starting position specified (if multiple values)
+
+                                            	int idx_row = Integer.valueOf(strIndices[0].trim());
                                                 int idx_col = Integer.valueOf(strIndices[1].trim());
 
-                                                if (allowedArrayIndex(0, value.length-1, idx_row-dim0min_val, name)
-                                                    && allowedArrayIndex(0, value[0].length-1, idx_col-dim1min_val, name)) {
-                                                    // take potentially negative minimum indices into account...
-                                                    value[idx_row-dim0min_val][idx_col-dim1min_val] = Double.valueOf(val);
+                                                if (allowedArrayIndex(dim0min_val, value.length-1+dim0min_val, idx_row, name)
+                                                    && allowedArrayIndex(dim1min_val, value[0].length-1+dim1min_val, idx_col, name)) {
+
+                                                	if (val.contains(",") || val.contains(" ")) {
+                                                		// multiple entries
+                                                		String[] values = val.split("[\\s]*,");
+
+                                                		for (int idxValue = 0; idxValue < values.length; ++idxValue) {
+
+                                                			int slowOffset = idxValue / value.length;
+                                                			int fastOffset = idxValue % value.length;
+
+                                                			value[idx_row-dim0min_val + fastOffset][idx_col-dim1min_val + slowOffset] = Double.valueOf(values[idxValue].trim());
+                                                		}
+
+                                                	} else {
+	                                                    // take potentially negative minimum indices into account...
+	                                                	value[idx_row-dim0min_val][idx_col-dim1min_val] = Double.valueOf(val);
+                                                	}
                                                 }
                                             }
                                         }

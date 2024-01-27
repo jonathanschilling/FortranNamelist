@@ -1,7 +1,5 @@
 package de.labathome;
 
-import de.labathome.namelist_variable;
-
 /**
  * Prototype class as target for parsing. The default is to look for variables
  * named the same as the variable name in the namelist. Optionally, you can

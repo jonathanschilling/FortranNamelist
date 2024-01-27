@@ -578,6 +578,7 @@ public class FortranNamelistTest {
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
+		Assertions.assertEquals("sum_atan", vmecInput.pcurr_type.toLowerCase());
 		double[] ac = new double[21];
 		ac[0] = 0.0;
 		ac[1] = 1.0;
@@ -668,89 +669,308 @@ public class FortranNamelistTest {
 		assertNotNull(vmecInput);
 		vmecInput.sanitize();
 
-
 		// --------------------
 		// Numerical Resolution and Symmetry Assumptions
 		Assertions.assertEquals(vmecInput.lasym, false);
-		// nfp
-		// mpol
-		// ntor
-		// ntheta
-		// nzeta
+		Assertions.assertEquals(vmecInput.nfp, 5);
+		Assertions.assertEquals(vmecInput.mpol, 12);
+		Assertions.assertEquals(vmecInput.ntor, 12);
+		Assertions.assertEquals(vmecInput.ntheta, 32);
+		Assertions.assertEquals(vmecInput.nzeta, 36);
 
 		// --------------------
 		// Multi-Grid Steps
-		// ns_array
-		// ftol_array
-		// niter_array
+		int[] ns_array = new int[100];
+		ns_array[0] = 4;
+		ns_array[1] = 9;
+		ns_array[2] = 28;
+		ns_array[3] = 99;
+		Assertions.assertArrayEquals(ns_array, vmecInput.ns_array);
+
+		double[] ftol_array = new double[100];
+		ftol_array[0] = 1.0e-3;
+		ftol_array[1] = 1.0e-5;
+		ftol_array[2] = 1.0e-9;
+		ftol_array[3] = 1.0e-14;
+		Assertions.assertArrayEquals(ftol_array, vmecInput.ftol_array);
+
+		int[] niter_array = new int[100];
+		Arrays.fill(niter_array, 100000);
+		Assertions.assertArrayEquals(niter_array, vmecInput.niter_array);
 
 		// --------------------
 		// Global Physics Parameters
-		// phiedge
-		// ncurr
+		Assertions.assertEquals(-1.8, vmecInput.phiedge);
+		Assertions.assertEquals(1, vmecInput.ncurr);
 
 		// --------------------
 		// Profile of Mass or Pressure
-		// pmass_type
-		// am
-		// am_aux_s
-		// am_aux_f
-		// pres_scale
-		// gamma
-		// spres_ped
+		Assertions.assertEquals("power_series", vmecInput.pmass_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecInput.am);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.am_aux_f);
+		Assertions.assertEquals(1.0, vmecInput.pres_scale);
+		Assertions.assertEquals(0.0, vmecInput.gamma);
+		Assertions.assertEquals(1.0, vmecInput.spres_ped);
 
 		// --------------------
 		// (Initial Guess for) Rotational Transform Profile
-		// piota_type
-		// ai
-		// ai_aux_s
-		// ai_aux_f
-
+		Assertions.assertEquals("power_series", vmecInput.piota_type.toLowerCase());
+		Assertions.assertArrayEquals(new double[21], vmecInput.ai);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ai_aux_f);
 
 		// --------------------
 		// (Initial Guess for) Toroidal Current Profile
-		// pcurr_type
-		// ac
-		// ac_aux_s
-		// ac_aux_f
-		// curtor
-		// bloat
-
-
-
+		Assertions.assertEquals("power_series", vmecInput.pcurr_type.toLowerCase());
+		double[] ac = new double[21];
+		ac[0] = 0.0;
+		ac[1] = 1.0;
+		ac[2] = -1.0;
+		Assertions.assertArrayEquals(ac, vmecInput.ac);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_s);
+		Assertions.assertArrayEquals(new double[VmecIndataNamelist.nsd], vmecInput.ac_aux_f);
+		Assertions.assertEquals(44000.0, vmecInput.curtor);
+		Assertions.assertEquals(1.0, vmecInput.bloat);
 
 		// --------------------
 		// Free-Boundary Parameters
-		// lfreeb
-		// mgrid_file
-		// extcur
-		// nvacskip
-
-
+		Assertions.assertEquals(true, vmecInput.lfreeb);
+		Assertions.assertEquals("mgrid_w7x_nv36_hires.nc", vmecInput.mgrid_file);
+		double[] extcur = new double[VmecIndataNamelist.nigroup];
+		extcur[0] = 12882.480489739242;
+		extcur[1] = 12882.480489739242;
+		extcur[2] = 12882.480489739242;
+		extcur[3] = 12882.480489739242;
+		extcur[4] = 12882.480489739242;
+		Assertions.assertArrayEquals(extcur, vmecInput.extcur);
+		Assertions.assertEquals(6, vmecInput.nvacskip);
 
 		// --------------------
 		// Tweaking Parameters
-		// nstep
-		// aphi
-		// delt
-		// tcon0
-		// lforbal
-
+		Assertions.assertEquals(100, vmecInput.nstep);
+		double[] aphi = new double[20];
+		aphi[0] = 1.0;
+		Assertions.assertArrayEquals(aphi, vmecInput.aphi);
+		Assertions.assertEquals(0.6, vmecInput.delt);
+		Assertions.assertEquals(1.0, vmecInput.tcon0);
+		Assertions.assertEquals(false, vmecInput.lforbal);
 
 		// --------------------
 		// Initial Guess for Magnetic Axis Geometry
-		// raxis_cc
-		// zaxis_cs
-		// raxis_cs
-		// zaxis_cc
+		double[] raxis_cc = new double[VmecIndataNamelist.ntord + 1];
+		raxis_cc[0] = 5.5607;
+		raxis_cc[1] = 0.37075;
+		Assertions.assertArrayEquals(raxis_cc, vmecInput.raxis_cc);
 
+		double[] zaxis_cs = new double[VmecIndataNamelist.ntord + 1];
+		zaxis_cs[1] = -0.30815;
+		Assertions.assertArrayEquals(zaxis_cs, vmecInput.zaxis_cs);
+
+		double[] raxis_cs = new double[VmecIndataNamelist.ntord + 1];
+		Assertions.assertArrayEquals(raxis_cs, vmecInput.raxis_cs);
+
+		double[] zaxis_cc = new double[VmecIndataNamelist.ntord + 1];
+		Assertions.assertArrayEquals(zaxis_cc, vmecInput.zaxis_cc);
 
 		// --------------------
 		// (Initial Guess for) Boundary Geometry
-		// rbc
-		// zbs
-		// rbs
-		// zbc
+
+		double[][] rbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
+		rbc[VmecIndataNamelist.ntord + 0][0] = 5.5208;
+		rbc[VmecIndataNamelist.ntord + 1][0] = 0.27787;
+		rbc[VmecIndataNamelist.ntord + 2][0] = -0.0068943;
+		rbc[VmecIndataNamelist.ntord + 3][0] = -1.0741E-4;
+		rbc[VmecIndataNamelist.ntord + 4][0] = -0.0014489;
+		rbc[VmecIndataNamelist.ntord + 5][0] = -7.7056E-5;
+		rbc[VmecIndataNamelist.ntord + 6][0] = -3.2743E-4;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][1] = -5.7628E-4;
+		rbc[VmecIndataNamelist.ntord - 5][1] = -1.3638E-4;
+		rbc[VmecIndataNamelist.ntord - 4][1] = -0.0011712;
+		rbc[VmecIndataNamelist.ntord - 3][1] = -2.206E-4;
+		rbc[VmecIndataNamelist.ntord - 2][1] = 0.0023049;
+		rbc[VmecIndataNamelist.ntord - 1][1] = 0.024621;
+		rbc[VmecIndataNamelist.ntord + 0][1] = 0.48875;
+		rbc[VmecIndataNamelist.ntord + 1][1] = -0.21307;
+		rbc[VmecIndataNamelist.ntord + 2][1] = -0.018187;
+		rbc[VmecIndataNamelist.ntord + 3][1] = 0.0022951;
+		rbc[VmecIndataNamelist.ntord + 4][1] = 0.0017087;
+		rbc[VmecIndataNamelist.ntord + 5][1] = 2.908E-4;
+		rbc[VmecIndataNamelist.ntord + 6][1] = -6.7525E-5;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][2] = 5.2205E-4;
+		rbc[VmecIndataNamelist.ntord - 5][2] = -3.685E-4;
+		rbc[VmecIndataNamelist.ntord - 4][2] = -4.4685E-5;
+		rbc[VmecIndataNamelist.ntord - 3][2] = 1.3933E-4;
+		rbc[VmecIndataNamelist.ntord - 2][2] = 0.0021791;
+		rbc[VmecIndataNamelist.ntord - 1][2] = 0.011469;
+		rbc[VmecIndataNamelist.ntord + 0][2] = 0.038021;
+		rbc[VmecIndataNamelist.ntord + 1][2] = 0.044568;
+		rbc[VmecIndataNamelist.ntord + 2][2] = 0.067691;
+		rbc[VmecIndataNamelist.ntord + 3][2] = -0.0015827;
+		rbc[VmecIndataNamelist.ntord + 4][2] = -7.0661E-4;
+		rbc[VmecIndataNamelist.ntord + 5][2] = 1.1135E-4;
+		rbc[VmecIndataNamelist.ntord + 6][2] = 1.8763E-4;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][3] = -1.7461E-4;
+		rbc[VmecIndataNamelist.ntord - 5][3] = 6.2895E-5;
+		rbc[VmecIndataNamelist.ntord - 4][3] = 2.4326E-4;
+		rbc[VmecIndataNamelist.ntord - 3][3] = -2.8097E-5;
+		rbc[VmecIndataNamelist.ntord - 2][3] = -2.6826E-5;
+		rbc[VmecIndataNamelist.ntord - 1][3] = 0.0015951;
+		rbc[VmecIndataNamelist.ntord + 0][3] = -0.0027434;
+		rbc[VmecIndataNamelist.ntord + 1][3] = -0.012242;
+		rbc[VmecIndataNamelist.ntord + 2][3] = -0.02109;
+		rbc[VmecIndataNamelist.ntord + 3][3] = -0.013199;
+		rbc[VmecIndataNamelist.ntord + 4][3] = 0.0013953;
+		rbc[VmecIndataNamelist.ntord + 5][3] = 7.1688E-5;
+		rbc[VmecIndataNamelist.ntord + 6][3] = -5.6587E-6;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][4] = 1.3336E-4;
+		rbc[VmecIndataNamelist.ntord - 5][4] = -1.0498E-4;
+		rbc[VmecIndataNamelist.ntord - 4][4] = -4.768E-6;
+		rbc[VmecIndataNamelist.ntord - 3][4] = 1.8088E-4;
+		rbc[VmecIndataNamelist.ntord - 2][4] = 7.3539E-5;
+		rbc[VmecIndataNamelist.ntord - 1][4] = -4.8731E-4;
+		rbc[VmecIndataNamelist.ntord + 0][4] = 0.0022625;
+		rbc[VmecIndataNamelist.ntord + 1][4] = -0.0011282;
+		rbc[VmecIndataNamelist.ntord + 2][4] = 0.0086662;
+		rbc[VmecIndataNamelist.ntord + 3][4] = 0.0031656;
+		rbc[VmecIndataNamelist.ntord + 4][4] = 4.3233E-4;
+		rbc[VmecIndataNamelist.ntord + 5][4] = -6.7706E-4;
+		rbc[VmecIndataNamelist.ntord + 6][4] = 3.381E-5;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][5] = -1.0377E-4;
+		rbc[VmecIndataNamelist.ntord - 5][5] = -9.0017E-5;
+		rbc[VmecIndataNamelist.ntord - 4][5] = 1.6073E-4;
+		rbc[VmecIndataNamelist.ntord - 3][5] = -6.5786E-5;
+		rbc[VmecIndataNamelist.ntord - 2][5] = -8.2925E-5;
+		rbc[VmecIndataNamelist.ntord - 1][5] = 6.1793E-4;
+		rbc[VmecIndataNamelist.ntord + 0][5] = 4.5952E-4;
+		rbc[VmecIndataNamelist.ntord + 1][5] = 0.0019919;
+		rbc[VmecIndataNamelist.ntord + 2][5] = -5.325E-4;
+		rbc[VmecIndataNamelist.ntord + 3][5] = -0.0011767;
+		rbc[VmecIndataNamelist.ntord + 4][5] = 0.0010514;
+		rbc[VmecIndataNamelist.ntord + 5][5] = 1.5892E-4;
+		rbc[VmecIndataNamelist.ntord + 6][5] = 8.5567E-5;
+		//
+		rbc[VmecIndataNamelist.ntord - 6][6] = 4.7116E-5;
+		rbc[VmecIndataNamelist.ntord - 5][6] = -2.8274E-5;
+		rbc[VmecIndataNamelist.ntord - 4][6] = -2.3142E-5;
+		rbc[VmecIndataNamelist.ntord - 3][6] = 6.8603E-5;
+		rbc[VmecIndataNamelist.ntord - 2][6] = 1.0263E-4;
+		rbc[VmecIndataNamelist.ntord - 1][6] = -4.8358E-5;
+		rbc[VmecIndataNamelist.ntord + 0][6] = 1.4547E-4;
+		rbc[VmecIndataNamelist.ntord + 1][6] = -0.0016075;
+		rbc[VmecIndataNamelist.ntord + 2][6] = -0.0015746;
+		rbc[VmecIndataNamelist.ntord + 3][6] = -0.0013242;
+		rbc[VmecIndataNamelist.ntord + 4][6] = -7.94E-4;
+		rbc[VmecIndataNamelist.ntord + 5][6] = -6.1283E-4;
+		rbc[VmecIndataNamelist.ntord + 6][6] = 1.218E-4;
+		//
+		Assertions.assertArrayEquals(rbc, vmecInput.rbc);
+
+		double[][] zbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
+		zbs[VmecIndataNamelist.ntord + 0][0] = 0.0;
+		zbs[VmecIndataNamelist.ntord + 1][0] = -0.23539;
+		zbs[VmecIndataNamelist.ntord + 2][0] = 0.0026848;
+		zbs[VmecIndataNamelist.ntord + 3][0] = 0.0020733;
+		zbs[VmecIndataNamelist.ntord + 4][0] = 0.0017992;
+		zbs[VmecIndataNamelist.ntord + 5][0] = 2.1828E-4;
+		zbs[VmecIndataNamelist.ntord + 6][0] = 1.5737E-4;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][1] = 6.5157E-4;
+		zbs[VmecIndataNamelist.ntord - 5][1] = -3.7205E-4;
+		zbs[VmecIndataNamelist.ntord - 4][1] = -5.7712E-4;
+		zbs[VmecIndataNamelist.ntord - 3][1] = 8.91E-4;
+		zbs[VmecIndataNamelist.ntord - 2][1] = 0.0079723;
+		zbs[VmecIndataNamelist.ntord - 1][1] = 0.022911;
+		zbs[VmecIndataNamelist.ntord + 0][1] = 0.62516;
+		zbs[VmecIndataNamelist.ntord + 1][1] = 0.20804;
+		zbs[VmecIndataNamelist.ntord + 2][1] = 0.013018;
+		zbs[VmecIndataNamelist.ntord + 3][1] = -0.0013049;
+		zbs[VmecIndataNamelist.ntord + 4][1] = -1.5574E-4;
+		zbs[VmecIndataNamelist.ntord + 5][1] = 3.0286E-4;
+		zbs[VmecIndataNamelist.ntord + 6][1] = 2.7985E-4;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][2] = -6.9642E-4;
+		zbs[VmecIndataNamelist.ntord - 5][2] = 2.1661E-4;
+		zbs[VmecIndataNamelist.ntord - 4][2] = 1.7501E-4;
+		zbs[VmecIndataNamelist.ntord - 3][2] = -5.6433E-5;
+		zbs[VmecIndataNamelist.ntord - 2][2] = 2.44E-5;
+		zbs[VmecIndataNamelist.ntord - 1][2] = 0.0081389;
+		zbs[VmecIndataNamelist.ntord + 0][2] = -0.0042271;
+		zbs[VmecIndataNamelist.ntord + 1][2] = 0.019683;
+		zbs[VmecIndataNamelist.ntord + 2][2] = -0.050482;
+		zbs[VmecIndataNamelist.ntord + 3][2] = 0.0028309;
+		zbs[VmecIndataNamelist.ntord + 4][2] = 0.0010155;
+		zbs[VmecIndataNamelist.ntord + 5][2] = 2.3052E-4;
+		zbs[VmecIndataNamelist.ntord + 6][2] = -5.9997E-5;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][3] = 2.2405E-4;
+		zbs[VmecIndataNamelist.ntord - 5][3] = -1.2172E-5;
+		zbs[VmecIndataNamelist.ntord - 4][3] = -2.2395E-4;
+		zbs[VmecIndataNamelist.ntord - 3][3] = -2.7206E-5;
+		zbs[VmecIndataNamelist.ntord - 2][3] = 6.1237E-4;
+		zbs[VmecIndataNamelist.ntord - 1][3] = -4.8551E-4;
+		zbs[VmecIndataNamelist.ntord + 0][3] = -0.0014569;
+		zbs[VmecIndataNamelist.ntord + 1][3] = -0.0045355;
+		zbs[VmecIndataNamelist.ntord + 2][3] = 0.007419;
+		zbs[VmecIndataNamelist.ntord + 3][3] = 0.011026;
+		zbs[VmecIndataNamelist.ntord + 4][3] = -9.8338E-4;
+		zbs[VmecIndataNamelist.ntord + 5][3] = -7.5541E-5;
+		zbs[VmecIndataNamelist.ntord + 6][3] = 1.7458E-6;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][4] = -3.9856E-5;
+		zbs[VmecIndataNamelist.ntord - 5][4] = 2.0247E-5;
+		zbs[VmecIndataNamelist.ntord - 4][4] = 7.576E-5;
+		zbs[VmecIndataNamelist.ntord - 3][4] = -1.7144E-4;
+		zbs[VmecIndataNamelist.ntord - 2][4] = 4.2436E-5;
+		zbs[VmecIndataNamelist.ntord - 1][4] = 6.1602E-5;
+		zbs[VmecIndataNamelist.ntord + 0][4] = 7.808E-4;
+		zbs[VmecIndataNamelist.ntord + 1][4] = 0.0019232;
+		zbs[VmecIndataNamelist.ntord + 2][4] = 0.0087014;
+		zbs[VmecIndataNamelist.ntord + 3][4] = -0.0048804;
+		zbs[VmecIndataNamelist.ntord + 4][4] = -0.0014794;
+		zbs[VmecIndataNamelist.ntord + 5][4] = 5.5004E-4;
+		zbs[VmecIndataNamelist.ntord + 6][4] = 2.5113E-5;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][5] = -9.4615E-5;
+		zbs[VmecIndataNamelist.ntord - 5][5] = 1.9564E-4;
+		zbs[VmecIndataNamelist.ntord - 4][5] = -9.7698E-5;
+		zbs[VmecIndataNamelist.ntord - 3][5] = 4.1842E-5;
+		zbs[VmecIndataNamelist.ntord - 2][5] = -4.1543E-5;
+		zbs[VmecIndataNamelist.ntord - 1][5] = 4.2101E-4;
+		zbs[VmecIndataNamelist.ntord + 0][5] = 9.837E-4;
+		zbs[VmecIndataNamelist.ntord + 1][5] = 1.1787E-4;
+		zbs[VmecIndataNamelist.ntord + 2][5] = -0.002834;
+		zbs[VmecIndataNamelist.ntord + 3][5] = -4.3649E-4;
+		zbs[VmecIndataNamelist.ntord + 4][5] = 0.0011682;
+		zbs[VmecIndataNamelist.ntord + 5][5] = 6.0077E-6;
+		zbs[VmecIndataNamelist.ntord + 6][5] = -1.5061E-4;
+		//
+		zbs[VmecIndataNamelist.ntord - 6][6] = 1.933E-5;
+		zbs[VmecIndataNamelist.ntord - 5][6] = -6.0921E-5;
+		zbs[VmecIndataNamelist.ntord - 4][6] = 1.3194E-5;
+		zbs[VmecIndataNamelist.ntord - 3][6] = 1.1157E-4;
+		zbs[VmecIndataNamelist.ntord - 2][6] = -2.6581E-5;
+		zbs[VmecIndataNamelist.ntord - 1][6] = 7.4858E-7;
+		zbs[VmecIndataNamelist.ntord + 0][6] = -9.458E-6;
+		zbs[VmecIndataNamelist.ntord + 1][6] = -8.6688E-4;
+		zbs[VmecIndataNamelist.ntord + 2][6] = -0.0011037;
+		zbs[VmecIndataNamelist.ntord + 3][6] = -9.5527E-4;
+		zbs[VmecIndataNamelist.ntord + 4][6] = -5.5342E-4;
+		zbs[VmecIndataNamelist.ntord + 5][6] = 9.9096E-5;
+		zbs[VmecIndataNamelist.ntord + 6][6] = 3.3856E-5;
+		//
+		Assertions.assertArrayEquals(zbs, vmecInput.zbs);
+
+		double[][] rbs = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
+		Assertions.assertArrayEquals(rbs, vmecInput.rbs);
+
+		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
+		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
 
 	}
 
@@ -766,7 +986,6 @@ public class FortranNamelistTest {
 
 		// parse the namelist into a Java object
 		FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
-		parser._debug = true;
 		vmecInput = (VmecIndataNamelist) parser.getParsed();
 		assertNotNull(vmecInput);
 		vmecInput.sanitize();

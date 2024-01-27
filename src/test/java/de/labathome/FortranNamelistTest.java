@@ -2,10 +2,14 @@ package de.labathome;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -3456,6 +3460,53 @@ public class FortranNamelistTest {
 
 		double[][] zbc = new double[2 * VmecIndataNamelist.ntord + 1][VmecIndataNamelist.mpold + 1];
 		Assertions.assertArrayEquals(zbc, vmecInput.zbc);
+	}
+
+	@Test
+	void testParsingW7xReferenceRuns() {
+
+		String refFolder = "/data/jonathan/vmecWebservice/reference_runs_vmec_w7x/";
+		if (!new File(refFolder).exists()) {
+			// only test if folder is accessible
+			return;
+		}
+
+		String refIdListFile = "ref_id_list_from_webservice.txt";
+		try {
+			List<String> refIdLines = Files.readAllLines(Paths.get(refFolder, refIdListFile));
+			for (String refId: refIdLines) {
+				refId = refId.strip();
+				String[] shortId_subFolder = refId.split("\\s+");
+
+//				String shortId = shortId_subFolder[0];
+				String subFolder = shortId_subFolder[1];
+
+				if (subFolder.endsWith("/")) {
+					subFolder = subFolder.substring(0, subFolder.length() - 1);
+				}
+
+				String longId = subFolder.replace("/", ".");
+
+				String inputFilename = "input." + longId;
+
+				String inputFile = Files.readString(Paths.get(refFolder, "reference_runs", subFolder, inputFilename));
+
+				// --------------
+				// now try parsing the INDATA namelist
+
+				VmecIndataNamelist vmecInput = new VmecIndataNamelist();
+
+				// parse the namelist into a Java object
+				FortranNamelist parser = new FortranNamelist(inputFile, "indata", vmecInput);
+				vmecInput = (VmecIndataNamelist) parser.getParsed();
+				assertNotNull(vmecInput);
+				vmecInput.sanitize();
+
+//				System.out.println(shortId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -952,7 +952,6 @@ public class VmecIndataNamelist {
 
 		niter_array = new int[100];
 		Arrays.fill(niter_array, -1);
-		niter_array[0] = 100;
 
 		// Global Physics Parameters
 		phiedge = 1;
@@ -982,7 +981,7 @@ public class VmecIndataNamelist {
 		bloat = 1;
 
 		// Free-Boundary Parameters
-		lfreeb = false;
+		lfreeb = true;
 		mgrid_file = "NONE";
 		extcur = new double[nigroup];
 		nvacskip = 1;
@@ -1144,9 +1143,85 @@ public class VmecIndataNamelist {
 			}
 		}
 
-		// TODO: use nsin, niter, ftol if ns_array, ftol_array, niter_array are not set
+		if (tcon0 > 1.0) {
+			tcon0 = 1.0;
+		}
 
-		// TODO: use ipmass, ipiota, ipcurr if p****_type are not set
+		// if all entries in niter_array are equal to -1, replace them all with niter
+		boolean all_neg1 = true;
+		for (int i = 0; i < niter_array.length; ++i) {
+			if (niter_array[i] != -1) {
+				all_neg1 = false;
+				break;
+			}
+		}
+		if (all_neg1) {
+			Arrays.fill(niter_array, niter);
+		}
+
+		if (pmass_type == "power_series" && ipmass != 0) {
+			switch (ipmass) {
+			case 0:
+				pmass_type = "power_series";
+				break;
+			case 1:
+				pmass_type = "two_lorentz";
+				break;
+			case 11:
+				pmass_type = "akima_spline";
+				break;
+			case 13:
+				pmass_type = "cubic_spline";
+				break;
+			default:
+				throw new RuntimeException(String.format("ipmass=%d not implemented yet", ipmass));
+			}
+		}
+
+		if (piota_type == "power_series" && ipiota != 0) {
+			switch (ipiota) {
+			case 0:
+				pmass_type = "power_series";
+				break;
+			case 1:
+				pmass_type = "sum_atan";
+				break;
+			case 11:
+				pmass_type = "akima_spline";
+				break;
+			case 13:
+				pmass_type = "cubic_spline";
+				break;
+			default:
+				throw new RuntimeException(String.format("ipiota=%d not implemented yet", ipmass));
+			}
+		}
+
+		if (pcurr_type == "power_series" && ipcurr != 0) {
+			switch (ipcurr) {
+			case 0:
+				pmass_type = "power_series";
+				break;
+			case 1: // fall-through
+			case 2:
+				pmass_type = "sum_atan";
+				break;
+			case 11:
+				pmass_type = "akima_spline_i";
+				break;
+			case 12:
+				pmass_type = "akima_spline_ip";
+				break;
+			case 13:
+				pmass_type = "cubic_spline_i";
+				break;
+			case 14:
+				pmass_type = "cubic_spline_ip";
+				break;
+			default:
+				throw new RuntimeException(String.format("ipcurr=%d not implemented yet", ipmass));
+			}
+		}
 	}
 
 

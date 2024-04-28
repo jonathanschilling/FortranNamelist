@@ -6,6 +6,42 @@ import org.junit.jupiter.api.Test;
 public class TestStaticMethods {
 
 	@Test
+	void testStripTrailingZerosInt() {
+		int[] input1 = null;
+		Assertions.assertArrayEquals(null, FortranNamelist.stripTrailingZeros(input1));
+
+		int[] input2 = {};
+		Assertions.assertArrayEquals(new int[] {}, FortranNamelist.stripTrailingZeros(input2));
+
+		int[] input3 = { 0, 0, 0 };
+		Assertions.assertArrayEquals(new int[] {}, FortranNamelist.stripTrailingZeros(input3));
+
+		int[] input4 = { 4, 9, 11, 51 };
+		Assertions.assertArrayEquals(new int[] { 4, 9, 11, 51 }, FortranNamelist.stripTrailingZeros(input4));
+
+		int[] input5 = { 4, 9, 11, 51, 0, 0, 0 };
+		Assertions.assertArrayEquals(new int[] { 4, 9, 11, 51 }, FortranNamelist.stripTrailingZeros(input5));
+	}
+
+	@Test
+	void testStripTrailingZerosDouble() {
+		double[] input1 = null;
+		Assertions.assertArrayEquals(null, FortranNamelist.stripTrailingZeros(input1));
+
+		double[] input2 = {};
+		Assertions.assertArrayEquals(new double[] {}, FortranNamelist.stripTrailingZeros(input2));
+
+		double[] input3 = { 0.0, 0.0, 0.0};
+		Assertions.assertArrayEquals(new double[] {}, FortranNamelist.stripTrailingZeros(input3));
+
+		double[] input4 = { 4.0, 9.0, 11.0, 51.0 };
+		Assertions.assertArrayEquals(new double[] { 4.0, 9.0, 11.0, 51.0 }, FortranNamelist.stripTrailingZeros(input4));
+
+		double[] input5 = { 4.0, 9.0, 11.0, 51.0, 0.0, 0.0, 0.0 };
+		Assertions.assertArrayEquals(new double[] { 4.0, 9.0, 11.0, 51.0 }, FortranNamelist.stripTrailingZeros(input5));
+	}
+
+	@Test
 	void testStripTrailingZeros() {
 
 		Assertions.assertArrayEquals(null, FortranNamelist.stripTrailingZeros((int[])null));

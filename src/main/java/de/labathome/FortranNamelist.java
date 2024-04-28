@@ -2,9 +2,12 @@ package de.labathome;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1032,4 +1035,128 @@ public class FortranNamelist {
         }
         return true;
     }
+
+    // ---------------------
+
+    public static int[] stripTrailingZeros(int[] input) {
+		if (input == null) {
+			return null;
+		}
+
+		int nonZeroLength = input.length;
+		if (nonZeroLength == 0) {
+			return new int[0];
+		}
+
+		while (nonZeroLength > 0 && input[nonZeroLength - 1] == 0) {
+			nonZeroLength--;
+		}
+		return Arrays.copyOf(input, nonZeroLength);
+	}
+
+	public static double[] stripTrailingZeros(double[] input) {
+		final int minLength = 0;
+		return stripTrailingZeros(input, minLength);
+	}
+
+	public static double[] stripTrailingZeros(double[] input, int minLength) {
+		if (input == null) {
+			return null;
+		}
+
+		int nonZeroLength = input.length;
+		if (nonZeroLength == 0) {
+			return new double[0];
+		}
+
+		while (nonZeroLength > 0 && input[nonZeroLength - 1] == 0) {
+			nonZeroLength--;
+		}
+
+		if (nonZeroLength > 0 || minLength == 0) {
+			return Arrays.copyOf(input, nonZeroLength);
+		} else {
+			return new double[minLength];
+		}
+	}
+
+	// ---------------------
+
+	public static final String toFortranAsString(final boolean b) {
+		return b ? ".true." : ".false.";
+	}
+
+	public static final String toFortranAsString(final double[] x) {
+		final boolean omitZerosAtEnd = true;
+		return toFortranAsString(x, omitZerosAtEnd);
+	}
+
+	public static final String toFortranAsString(final double[] x, final boolean omitZerosAtEnd) {
+		Objects.requireNonNull(x);
+		String s = "";
+		for (int i = 0; i < x.length; ++i) {
+			s += String.format(Locale.ENGLISH, "% .20e", x[i]);
+
+			boolean onlyZerosFollow = true;
+			if (omitZerosAtEnd) {
+				for (int j = i + 1; j < x.length; ++j) {
+					if (x[j] != 0.0) {
+						onlyZerosFollow = false;
+						break;
+					}
+				}
+			}
+
+			if (i < x.length - 1) {
+				if (onlyZerosFollow) {
+					if (omitZerosAtEnd) {
+						break;
+					} else {
+						s += ", ";
+					}
+				} else {
+					s += ", ";
+				}
+			} // no matter what, the last number is not followed by a comma
+		}
+
+		return s;
+	}
+
+	public static final String toFortranAsString(final int[] x) {
+		final boolean omitZerosAtEnd = true;
+		return toFortranAsString(x, omitZerosAtEnd);
+	}
+
+	public static final String toFortranAsString(final int[] x, final boolean omitZerosAtEnd) {
+		Objects.requireNonNull(x);
+		String s = "";
+		for (int i = 0; i < x.length; ++i) {
+			s += String.format(Locale.ENGLISH, "%d", x[i]);
+
+			boolean onlyZerosFollow = true;
+			if (omitZerosAtEnd) {
+				for (int j = i + 1; j < x.length; ++j) {
+					if (x[j] != 0) {
+						onlyZerosFollow = false;
+						break;
+					}
+				}
+			}
+
+			if (i < x.length - 1) {
+				if (onlyZerosFollow) {
+					if (omitZerosAtEnd) {
+						break;
+					} else {
+						s += ", ";
+					}
+				} else {
+					s += ", ";
+				}
+			} // no matter what, the last number is not followed by a comma
+		}
+
+		return s;
+	}
 }
